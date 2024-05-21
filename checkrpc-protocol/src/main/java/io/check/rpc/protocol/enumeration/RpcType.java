@@ -17,7 +17,7 @@ public enum RpcType {
         this.type = type;
     }
 
-    public RpcType findType(int searchType) {
+    public static RpcType findByType(int searchType) {
         for (RpcType rpcType : RpcType.values()) {
             if (rpcType.getType() == searchType) {
                 return rpcType;

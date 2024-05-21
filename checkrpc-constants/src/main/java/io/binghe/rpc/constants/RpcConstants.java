@@ -7,4 +7,6 @@ public class RpcConstants {
      * 这是一个示例值，实际应用中应设置为特定的字节序列。
      */
     public static final short MAGIC = 0xCAE;
+
+    public static final int HEADER_TOTAL_LEN = 32;
 }

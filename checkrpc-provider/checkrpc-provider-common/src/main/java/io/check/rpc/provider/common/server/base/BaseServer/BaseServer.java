@@ -1,5 +1,7 @@
 package io.check.rpc.provider.common.server.base.BaseServer;
 
+import io.check.rpc.codec.RpcDecoder;
+import io.check.rpc.codec.RpcEncoder;
 import io.check.rpc.provider.common.handler.RpcProviderHandler;
 import io.check.rpc.provider.common.server.api.Server.Server;
 import io.netty.bootstrap.ServerBootstrap;
@@ -57,8 +59,8 @@ public class BaseServer implements Server {
                             // 配置ChannelPipeline，添加编解码器和自定义处理器
                             channel.pipeline()
                                     // TODO 预留编解码位置，待实现自定义协议
-                                    .addLast(new StringDecoder())
-                                    .addLast(new StringEncoder())
+                                    .addLast(new RpcEncoder())
+                                    .addLast(new RpcDecoder())
                                     .addLast(new RpcProviderHandler(handlerMap));
                         }
                     })

@@ -15,6 +15,10 @@
         <module>checkrpc-provider</module>
         <module>checkrpc-constants</module>
         <module>checkrpc-protocol</module>
+        <module>checkrpc-codec</module>
+        <module>checkrpc-serialization</module>
+        <module>checkrpc-serialization/checkrpc-serialization-api</module>
+        <module>checkrpc-serialization/checkrpc-serialization-jdk</module>
     </modules>
 
     <properties>
