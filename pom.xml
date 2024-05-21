@@ -13,6 +13,8 @@
         <module>checkrpc-common</module>
         <module>checkrpc-test</module>
         <module>checkrpc-provider</module>
+        <module>checkrpc-constants</module>
+        <module>checkrpc-protocol</module>
     </modules>
 
     <properties>
