@@ -1,0 +1,6 @@
+2024-05-21 12:33:56 INFO  RpcServiceScanner:38 - 当前标注了@RpcService注解的类实例名称===>>> io.check.rpc.test.scanner.provider.ProviderDemoServiceImpl
+2024-05-21 12:33:56 INFO  RpcServiceScanner:39 - @RpcService注解上标注的属性信息如下：
+2024-05-21 12:33:56 INFO  RpcServiceScanner:40 - interfaceClass===>>> io.check.rpc.test.scanner.service.DemoService
+2024-05-21 12:33:56 INFO  RpcServiceScanner:41 - interfaceClassName===>>> io.check.rpc.test.scanner.service.DemoService
+2024-05-21 12:33:56 INFO  RpcServiceScanner:42 - version===>>> 1.0.0
+2024-05-21 12:33:56 INFO  RpcServiceScanner:43 - group===>>> check

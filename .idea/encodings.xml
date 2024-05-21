@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding">
+    <file url="file://$PROJECT_DIR$/checkrpc-annotation/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/checkrpc-annotation/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/checkrpc-common/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/checkrpc-common/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/checkrpc-provider/checkrpc-provider-common/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/checkrpc-provider/checkrpc-provider-common/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/checkrpc-provider/checkrpc-provider-native/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/checkrpc-provider/checkrpc-provider-native/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/checkrpc-provider/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/checkrpc-provider/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/checkrpc-test/checkrpc-test-provider/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/checkrpc-test/checkrpc-test-provider/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/checkrpc-test/checkrpc-test-scanner/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/checkrpc-test/checkrpc-test-scanner/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/checkrpc-test/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/checkrpc-test/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/resources" charset="UTF-8" />
+  </component>
+</project>
