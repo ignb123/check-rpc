@@ -14,6 +14,7 @@
     <modules>
         <module>checkrpc-test-consumer-codec</module>
         <module>checkrpc-test-consumer-handler</module>
+        <module>checkrpc-test-consumer-native</module>
     </modules>
 
 

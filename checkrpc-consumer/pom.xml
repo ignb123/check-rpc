@@ -13,6 +13,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>checkrpc-consumer-common</module>
+        <module>checkrpc-consumer-native</module>
     </modules>
 
 
