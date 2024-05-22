@@ -1,11 +1,12 @@
 package io.check.rpc.consumer.common;
 
 import io.check.rpc.common.threadpool.ClientThreadPool;
-import io.check.rpc.consumer.common.future.RPCFuture;
 import io.check.rpc.consumer.common.handler.RpcConsumerHandler;
 import io.check.rpc.consumer.common.initializer.RpcConsumerInitializer;
 import io.check.rpc.protocol.RpcProtocol;
 import io.check.rpc.protocol.request.RpcRequest;
+import io.check.rpc.proxy.api.consumer.Consumer;
+import io.check.rpc.proxy.api.future.RPCFuture;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
@@ -18,7 +19,7 @@ import org.slf4j.LoggerFactory;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class RpcConsumer {
+public class RpcConsumer implements Consumer {
 
     private final Logger logger = LoggerFactory.getLogger(RpcConsumer.class);
     private final Bootstrap bootstrap;

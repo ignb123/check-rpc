@@ -1,11 +1,11 @@
-package io.check.rpc.consumer.common.future;
+package io.check.rpc.proxy.api.future;
 
-import com.sun.corba.se.impl.orbutil.concurrent.Sync;
 import io.check.rpc.common.threadpool.ClientThreadPool;
-import io.check.rpc.consumer.common.callback.AsyncRPCCallback;
+
 import io.check.rpc.protocol.RpcProtocol;
 import io.check.rpc.protocol.request.RpcRequest;
 import io.check.rpc.protocol.response.RpcResponse;
+import io.check.rpc.proxy.api.callback.AsyncRPCCallback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

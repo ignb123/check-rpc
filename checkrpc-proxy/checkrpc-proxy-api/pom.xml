@@ -5,23 +5,19 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>io.check.rpc</groupId>
-        <artifactId>checkrpc-consumer</artifactId>
+        <artifactId>checkrpc-proxy</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>checkrpc-consumer-common</artifactId>
+    <artifactId>checkrpc-proxy-api</artifactId>
 
     <dependencies>
         <dependency>
             <groupId>io.check.rpc</groupId>
-            <artifactId>checkrpc-codec</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.check.rpc</groupId>
-            <artifactId>checkrpc-proxy-jdk</artifactId>
+            <artifactId>checkrpc-protocol</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>
+
 
 </project>

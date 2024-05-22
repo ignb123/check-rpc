@@ -1,6 +1,7 @@
 package io.check.rpc.consumer.common.context;
 
-import io.check.rpc.consumer.common.future.RPCFuture;
+
+import io.check.rpc.proxy.api.future.RPCFuture;
 
 public class RpcContext {
 

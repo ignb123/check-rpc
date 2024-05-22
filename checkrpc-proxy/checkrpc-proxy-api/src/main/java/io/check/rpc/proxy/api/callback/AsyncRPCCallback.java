@@ -1,4 +1,4 @@
-package io.check.rpc.consumer.common.callback;
+package io.check.rpc.proxy.api.callback;
 
 public interface AsyncRPCCallback {
     /**
@@ -10,3 +10,4 @@ public interface AsyncRPCCallback {
      */
     void onException(Exception e);
 }
+

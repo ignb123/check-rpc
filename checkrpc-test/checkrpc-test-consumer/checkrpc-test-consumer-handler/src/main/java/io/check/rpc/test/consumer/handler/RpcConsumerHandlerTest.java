@@ -1,12 +1,12 @@
 package io.check.rpc.test.consumer.handler;
 
 import io.check.rpc.consumer.common.RpcConsumer;
-import io.check.rpc.consumer.common.callback.AsyncRPCCallback;
-import io.check.rpc.consumer.common.context.RpcContext;
-import io.check.rpc.consumer.common.future.RPCFuture;
+
 import io.check.rpc.protocol.RpcProtocol;
 import io.check.rpc.protocol.header.RpcHeaderFactory;
 import io.check.rpc.protocol.request.RpcRequest;
+import io.check.rpc.proxy.api.callback.AsyncRPCCallback;
+import io.check.rpc.proxy.api.future.RPCFuture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
