@@ -1,6 +1,7 @@
 package io.check.rpc.common.scanner.server;
 
 import io.check.rpc.annotation.RpcService;
+import io.check.rpc.common.helper.RpcServiceHelper;
 import io.check.rpc.common.scanner.ClassScanner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,9 +36,8 @@ public class RpcServiceScanner extends ClassScanner {
                 if (rpcService != null){
                     //优先使用interfaceClass, interfaceClass的name为空，再使用interfaceClassName
                     //TODO 后续逻辑向注册中心注册服务元数据，同时向handlerMap中记录标注了RpcService注解的类实例
-                    //handlerMap中的Key先简单存储为serviceName+version+group，后续根据实际情况处理Key
                     String serviceName = geServiceName(rpcService);
-                    String key = serviceName.concat(rpcService.version()).concat(rpcService.group());
+                    String key = RpcServiceHelper.buildServiceKey(serviceName, rpcService.version(), rpcService.group());
                     handlerMap.put(key,clazz.newInstance());
                 }
             } catch (Exception e) {
