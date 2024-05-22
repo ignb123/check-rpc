@@ -17,6 +17,7 @@
         <module>checkrpc-protocol</module>
         <module>checkrpc-codec</module>
         <module>checkrpc-serialization</module>
+        <module>checkrpc-consumer</module>
     </modules>
 
     <properties>
