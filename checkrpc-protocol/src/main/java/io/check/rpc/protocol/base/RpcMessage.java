@@ -1,6 +1,15 @@
 package io.check.rpc.protocol.base;
 
-public class RpcMessage {
+import java.io.Serializable;
+
+
+/**
+ * @author check
+ * @version 1.0.0
+ * @description 消息体基础类
+ */
+
+public class RpcMessage implements Serializable {
 
     /**
      * 是否单向发送

@@ -8,4 +8,8 @@ import io.check.rpc.test.provider.service.DemoService;
         version = "1.0.0",
         group = "check")
 public class ProviderDemoServiceImpl implements DemoService {
+    @Override
+    public String hello(String name) {
+        return name;
+    }
 }

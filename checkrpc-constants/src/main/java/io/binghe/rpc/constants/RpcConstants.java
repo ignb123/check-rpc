@@ -1,12 +1,30 @@
 package io.binghe.rpc.constants;
 
+/**
+ * @author check
+ * @version 1.0.0
+ * @description 常量类
+ */
 public class RpcConstants {
 
     /**
-     * 协议魔数，用于在接收端快速识别数据包是否为本协议的数据。
-     * 这是一个示例值，实际应用中应设置为特定的字节序列。
+     * 消息头，固定32个字节
      */
-    public static final short MAGIC = 0xCAE;
-
     public static final int HEADER_TOTAL_LEN = 32;
+
+    /**
+     * 魔数
+     */
+    public static final short MAGIC = 0x10;
+
+    /**
+     * 版本号
+     */
+    public static final byte VERSION = 0x1;
+
+    /**
+     * REFLECT_TYPE_JDK
+     */
+    public static final String REFLECT_TYPE_JDK = "jdk";
+
 }

@@ -6,6 +6,7 @@ import io.check.rpc.protocol.header.RpcHeader;
 import io.check.rpc.serialization.api.Serialization;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.EncoderException;
 import io.netty.handler.codec.MessageToByteEncoder;
 
 public class RpcEncoder extends MessageToByteEncoder<RpcProtocol<Object>> implements RpcCodec{
@@ -21,8 +22,13 @@ public class RpcEncoder extends MessageToByteEncoder<RpcProtocol<Object>> implem
         Serialization serialization = getJdkSerialization();
         byteBuf.writeBytes(SerializationUtils.paddingString(serializationType)
                 .getBytes("UTF-8"));
-        byte[] data = serialization.serialize(msg.getBody());
-        byteBuf.writeInt(data.length);
-        byteBuf.writeBytes(data);
+        try {
+            byte[] data = serialization.serialize(msg.getBody());
+            byteBuf.writeInt(data.length);
+            byteBuf.writeBytes(data);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
     }
 }
