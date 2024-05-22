@@ -17,5 +17,12 @@
             <artifactId>checkrpc-provider-native</artifactId>
             <version>${project.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>io.check.rpc</groupId>
+            <artifactId>checkrpc-test-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
     </dependencies>
 </project>

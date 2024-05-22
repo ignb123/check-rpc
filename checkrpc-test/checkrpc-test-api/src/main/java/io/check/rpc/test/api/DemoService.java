@@ -1,6 +1,5 @@
-package io.check.rpc.test.provider.service;
+package io.check.rpc.test.api;
 
 public interface DemoService {
-
     String hello(String name);
 }

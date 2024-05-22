@@ -22,8 +22,7 @@ public class RpcServiceScanner extends ClassScanner {
     /**
      * 扫描指定包下的类，并筛选使用@RpcService注解标注的类
      */
-    public static Map<String, Object> doScannerWithRpcServiceAnnotationFilterAndRegistryService(
-            /*String host, int port, */ String scanPackage/*, RegistryService registryService*/) throws Exception{
+    public static Map<String, Object> doScannerWithRpcServiceAnnotationFilterAndRegistryService(String scanPackage) throws Exception{
         Map<String, Object> handlerMap = new HashMap<>();
         List<String> classNameList = getClassNameList(scanPackage);
         if (classNameList == null || classNameList.isEmpty()){
@@ -48,6 +47,15 @@ public class RpcServiceScanner extends ClassScanner {
     }
 
     private static String geServiceName(RpcService rpcService){
-        return rpcService.interfaceClassName();
+        //优先使用interfaceClass
+        Class clazz = rpcService.interfaceClass();
+        if (clazz == void.class){
+            return rpcService.interfaceClassName();
+        }
+        String serviceName = clazz.getName();
+        if (serviceName == null || serviceName.trim().isEmpty()){
+            serviceName = rpcService.interfaceClassName();
+        }
+        return serviceName;
     }
 }

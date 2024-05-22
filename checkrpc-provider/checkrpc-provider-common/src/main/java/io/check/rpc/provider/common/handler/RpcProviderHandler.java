@@ -1,6 +1,5 @@
 package io.check.rpc.provider.common.handler;
 
-import com.alibaba.fastjson2.JSONObject;
 import io.check.rpc.common.helper.RpcServiceHelper;
 import io.check.rpc.common.threadpool.ServerThreadPool;
 import io.check.rpc.protocol.RpcProtocol;
