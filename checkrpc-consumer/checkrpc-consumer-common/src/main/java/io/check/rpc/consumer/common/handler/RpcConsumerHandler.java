@@ -1,6 +1,7 @@
 package io.check.rpc.consumer.common.handler;
 
 import com.alibaba.fastjson2.JSONObject;
+import io.check.rpc.consumer.common.future.RPCFuture;
 import io.check.rpc.protocol.RpcProtocol;
 import io.check.rpc.protocol.header.RpcHeader;
 import io.check.rpc.protocol.request.RpcRequest;
@@ -27,8 +28,8 @@ public class RpcConsumerHandler extends SimpleChannelInboundHandler<RpcProtocol<
     // 存储远程对端的地址信息
     private SocketAddress remotePeer;
 
-    //存储请求ID与RpcResponse协议的映射关系
-    private Map<Long, RpcProtocol<RpcResponse>> pendingResponse = new ConcurrentHashMap<>();
+    //存储请求ID与RPCFuture协议的映射关系
+    private Map<Long, RPCFuture> pendingRPC = new ConcurrentHashMap<>();
 
     // 获取当前的通信通道
     public Channel getChannel() {
@@ -79,29 +80,26 @@ public class RpcConsumerHandler extends SimpleChannelInboundHandler<RpcProtocol<
         logger.info("服务消费者接收到的数据===>>>{}", JSONObject.toJSONString(protocol));
         RpcHeader header = protocol.getHeader();
         long requestId = header.getRequestId();
-        pendingResponse.put(requestId,protocol);
+        RPCFuture rpcFuture = pendingRPC.remove(requestId);
+        if(rpcFuture != null){
+            rpcFuture.done(protocol);
+        }
     }
 
     /**
      * 向服务提供者发送请求的逻辑。
      * @param protocol 要发送的RPC协议数据包
      */
-    public Object sendRequest(RpcProtocol<RpcRequest> protocol) {
+    public RPCFuture sendRequest(RpcProtocol<RpcRequest> protocol) {
         // 记录发送的数据
         logger.info("服务消费者发送的数据===>>>{}", JSONObject.toJSONString(protocol));
 
+        RPCFuture rpcFuture = this.getRpcFuture(protocol);
         // 发送数据
         channel.writeAndFlush(protocol);
 
-        RpcHeader header = protocol.getHeader();
-        long requestId = header.getRequestId();
-        // 异步转同步
-        while(true){
-            RpcProtocol<RpcResponse> responseRpcProtocol = pendingResponse.remove(requestId);
-            if (responseRpcProtocol != null){
-                return responseRpcProtocol.getBody().getResult();
-            }
-        }
+        return rpcFuture;
+
     }
 
     /**
@@ -112,4 +110,10 @@ public class RpcConsumerHandler extends SimpleChannelInboundHandler<RpcProtocol<
         channel.writeAndFlush(Unpooled.EMPTY_BUFFER).addListener(ChannelFutureListener.CLOSE);
     }
 
+    private RPCFuture getRpcFuture(RpcProtocol<RpcRequest> protocol) {
+        RPCFuture rpcFuture = new RPCFuture(protocol);
+        long requestId = protocol.getHeader().getRequestId();
+        pendingRPC.put(requestId, rpcFuture);
+        return rpcFuture;
+    }
 }
