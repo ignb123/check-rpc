@@ -4,12 +4,16 @@ import io.check.rpc.consumer.common.RpcConsumer;
 import io.check.rpc.protocol.RpcProtocol;
 import io.check.rpc.protocol.header.RpcHeaderFactory;
 import io.check.rpc.protocol.request.RpcRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class RpcConsumerHandlerTest {
+
+    private final static Logger logger = LoggerFactory.getLogger(RpcConsumerHandlerTest.class);
     public static void main(String[] args) throws Exception {
         RpcConsumer consumer = RpcConsumer.getInstance();
-        consumer.sendRequest(getRpcRequestProtocol());
-        Thread.sleep(2000);
+        Object result = consumer.sendRequest(getRpcRequestProtocol());
+        logger.info("从服务提供者获取到的数据===>>>" + result.toString());
         consumer.close();
     }
     private static RpcProtocol<RpcRequest> getRpcRequestProtocol(){
