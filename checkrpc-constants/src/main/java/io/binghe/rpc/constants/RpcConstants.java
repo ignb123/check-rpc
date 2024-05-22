@@ -27,4 +27,25 @@ public class RpcConstants {
      */
     public static final String REFLECT_TYPE_JDK = "jdk";
 
+    /**
+     * REFLECT_TYPE_CGLIB
+     */
+    public static final String REFLECT_TYPE_CGLIB = "cglib";
+
+    /**
+     * JDK动态代理
+     */
+    public static final String PROXY_JDK = "jdk";
+
+    /**
+     * javassist动态代理
+     */
+    public static final String PROXY_JAVASSIST = "javassist";
+
+    /**
+     * cglib动态代理
+     */
+    public static final String PROXY_CGLIB = "cglib";
+
+
 }
