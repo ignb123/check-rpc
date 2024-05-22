@@ -1,4 +1,4 @@
-package io.check.rpc.common.api;
+package io.check.rpc.common.id;
 
 import java.util.concurrent.atomic.AtomicLong;
 

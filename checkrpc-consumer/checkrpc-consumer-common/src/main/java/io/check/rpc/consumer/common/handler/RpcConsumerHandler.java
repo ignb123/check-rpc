@@ -1,6 +1,7 @@
 package io.check.rpc.consumer.common.handler;
 
 import com.alibaba.fastjson2.JSONObject;
+import io.check.rpc.consumer.common.context.RpcContext;
 import io.check.rpc.consumer.common.future.RPCFuture;
 import io.check.rpc.protocol.RpcProtocol;
 import io.check.rpc.protocol.header.RpcHeader;
@@ -90,18 +91,33 @@ public class RpcConsumerHandler extends SimpleChannelInboundHandler<RpcProtocol<
      * 向服务提供者发送请求的逻辑。
      * @param protocol 要发送的RPC协议数据包
      */
-    public RPCFuture sendRequest(RpcProtocol<RpcRequest> protocol) {
+    public RPCFuture sendRequest(RpcProtocol<RpcRequest> protocol, boolean async, boolean oneway) {
         // 记录发送的数据
         logger.info("服务消费者发送的数据===>>>{}", JSONObject.toJSONString(protocol));
 
-        RPCFuture rpcFuture = this.getRpcFuture(protocol);
-        // 发送数据
-        channel.writeAndFlush(protocol);
-
-        return rpcFuture;
+        return oneway ? sendRequestOneway(protocol) : async ?
+                sendRequestAsync(protocol) : sendRequestSync(protocol);
 
     }
 
+    private RPCFuture sendRequestSync(RpcProtocol<RpcRequest> protocol) {
+        RPCFuture rpcFuture = this.getRpcFuture(protocol);
+        channel.writeAndFlush(protocol);
+        return rpcFuture;
+    }
+
+    private RPCFuture sendRequestAsync(RpcProtocol<RpcRequest> protocol) {
+        RPCFuture rpcFuture = this.getRpcFuture(protocol);
+        //如果是异步调用，则将RPCFuture放入RpcContext
+        RpcContext.getContext().setRPCFuture(rpcFuture);
+        channel.writeAndFlush(protocol);
+        return null;
+    }
+
+    private RPCFuture sendRequestOneway(RpcProtocol<RpcRequest> protocol) {
+        channel.writeAndFlush(protocol);
+        return null;
+    }
     /**
      * 关闭当前通信通道的逻辑。
      */

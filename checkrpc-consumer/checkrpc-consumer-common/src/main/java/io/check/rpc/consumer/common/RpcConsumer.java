@@ -62,7 +62,8 @@ public class RpcConsumer {
             handler = getRpcConsumerHandler(serviceAddress, port);
             handlerMap.put(key, handler);
         }
-        return handler.sendRequest(protocol);
+        RpcRequest request = protocol.getBody();
+        return handler.sendRequest(protocol, request.isAsync(), request.isOneway());
     }
 
 

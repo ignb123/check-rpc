@@ -1,7 +1,7 @@
 package io.check.rpc.protocol.header;
 
 import io.binghe.rpc.constants.RpcConstants;
-import io.check.rpc.common.api.IdFactory;
+import io.check.rpc.common.id.IdFactory;
 import io.check.rpc.protocol.enumeration.RpcType;
 
 public class RpcHeaderFactory {

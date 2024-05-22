@@ -1,6 +1,7 @@
 package io.check.rpc.test.consumer.handler;
 
 import io.check.rpc.consumer.common.RpcConsumer;
+import io.check.rpc.consumer.common.context.RpcContext;
 import io.check.rpc.consumer.common.future.RPCFuture;
 import io.check.rpc.protocol.RpcProtocol;
 import io.check.rpc.protocol.header.RpcHeaderFactory;
@@ -13,8 +14,9 @@ public class RpcConsumerHandlerTest {
     private final static Logger logger = LoggerFactory.getLogger(RpcConsumerHandlerTest.class);
     public static void main(String[] args) throws Exception {
         RpcConsumer consumer = RpcConsumer.getInstance();
-        RPCFuture future = consumer.sendRequest(getRpcRequestProtocol());
-        logger.info("从服务提供者获取到的数据===>>>" + future.get());
+        consumer.sendRequest(getRpcRequestProtocol());
+        RPCFuture future = RpcContext.getContext().getRPCFuture();
+        logger.info("无需获取返回的结果数据");
         consumer.close();
     }
     private static RpcProtocol<RpcRequest> getRpcRequestProtocol(){
@@ -29,7 +31,7 @@ public class RpcConsumerHandlerTest {
         request.setParameterTypes(new Class[]{String.class});
         request.setVersion("1.0.0");
         request.setAsync(false);
-        request.setOneway(false);
+        request.setOneway(true);
         protocol.setBody(request);
         return protocol;
     }
