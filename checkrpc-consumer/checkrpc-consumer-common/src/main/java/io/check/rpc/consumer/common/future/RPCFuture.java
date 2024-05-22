@@ -1,16 +1,22 @@
 package io.check.rpc.consumer.common.future;
 
+import com.sun.corba.se.impl.orbutil.concurrent.Sync;
+import io.check.rpc.common.threadpool.ClientThreadPool;
+import io.check.rpc.consumer.common.callback.AsyncRPCCallback;
 import io.check.rpc.protocol.RpcProtocol;
 import io.check.rpc.protocol.request.RpcRequest;
 import io.check.rpc.protocol.response.RpcResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.locks.AbstractQueuedSynchronizer;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class RPCFuture extends CompletableFuture<Object> {
 
@@ -21,6 +27,16 @@ public class RPCFuture extends CompletableFuture<Object> {
     private RpcProtocol<RpcRequest> requestRpcProtocol;
 
     private RpcProtocol<RpcResponse> responseRpcProtocol;
+
+    /**
+     * 存放回调接口
+     */
+    private List<AsyncRPCCallback> pendingCallbacks = new ArrayList<>();
+
+    /**
+     * 添加和执行回调方法时，进行加锁和解锁操作
+     */
+    private ReentrantLock lock = new ReentrantLock();
 
     private long startTime;
 
@@ -119,15 +135,52 @@ public class RPCFuture extends CompletableFuture<Object> {
     public void done(RpcProtocol<RpcResponse> responseRpcProtocol) {
         this.responseRpcProtocol = responseRpcProtocol;
         sync.release(1);
+        //新增的调用invokeCallbacks()方法
+        invokeCallbacks();
         // 计算响应时间并记录警告信息（如果响应时间超过阈值）
         long responseTime = System.currentTimeMillis() - startTime;
-        if(responseTime > this.responseTimeThreshold){
+        if (responseTime > this.responseTimeThreshold) {
             LOGGER.warn("Service response time is too slow. Request id = " +
                     responseRpcProtocol.getHeader().getRequestId() +
                     ". Response Time = " + responseTime + "ms");
         }
     }
 
+    private void runCallback(final AsyncRPCCallback callback) {
+        final RpcResponse res = this.responseRpcProtocol.getBody();
+        ClientThreadPool.submit(() -> {
+            if (!res.isError()) {
+                callback.onSuccess(res.getResult());
+            } else{
+                callback.onException(new RuntimeException("Response error", new Throwable(res.getError())));
+            }
+        });
+    }
+
+    public RPCFuture addCallback(AsyncRPCCallback callback) {
+        lock.lock();
+        try {
+            if (isDone()) {
+                runCallback(callback);
+            } else {
+                this.pendingCallbacks.add(callback);
+            }
+        }finally {
+            lock.unlock();
+        }
+        return this;
+    }
+
+    private void invokeCallbacks() {
+        lock.lock();
+        try {
+            for (final AsyncRPCCallback callback : pendingCallbacks){
+                runCallback(callback);
+            }
+        }finally {
+            lock.unlock();
+        }
+    }
 
     /**
      * Sync是一个基于AbstractQueuedSynchronizer实现的同步器，
