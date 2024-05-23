@@ -16,6 +16,7 @@
         <module>checkrpc-serialization-jdk</module>
         <module>checkrpc-serialization-json</module>
         <module>checkrpc-serialization-hessian2</module>
+        <module>checkrpc-serialization-protostuff</module>
     </modules>
 
 

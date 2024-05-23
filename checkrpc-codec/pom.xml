@@ -35,6 +35,12 @@
             <artifactId>checkrpc-serialization-hessian2</artifactId>
             <version>${project.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>io.check.rpc</groupId>
+            <artifactId>checkrpc-serialization-protostuff</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
 </project>
