@@ -6,6 +6,7 @@ import io.check.rpc.loadbalancer.random.RandomServiceLoadBalancer;
 import io.check.rpc.protocol.meta.ServiceMeta;
 import io.check.rpc.registry.api.RegistryService;
 import io.check.rpc.registry.api.config.RegistryConfig;
+import io.check.rpc.spi.loader.ExtensionLoader;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.retry.ExponentialBackoffRetry;
@@ -17,7 +18,6 @@ import org.apache.curator.x.discovery.details.JsonInstanceSerializer;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
-import java.util.Random;
 
 public class ZookeeperRegistryService implements RegistryService {
 
@@ -91,7 +91,6 @@ public class ZookeeperRegistryService implements RegistryService {
     @Override
     public void init(RegistryConfig registryConfig) throws Exception{
 
-        this.serviceLoadBalancer = new RandomServiceLoadBalancer<>();
 
         // 创建 CuratorFramework 客户端实例，并配置重试策略
         CuratorFramework client = CuratorFrameworkFactory
@@ -110,5 +109,7 @@ public class ZookeeperRegistryService implements RegistryService {
                 .build();
 
         this.serviceDiscovery.start(); // 启动服务发现
+        this.serviceLoadBalancer = ExtensionLoader.getExtension(ServiceLoadBalancer.class,
+                registryConfig.getRegistryLoadBalanceType());
     }
 }
