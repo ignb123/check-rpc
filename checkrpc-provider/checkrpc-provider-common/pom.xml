@@ -35,5 +35,11 @@
             <artifactId>checkrpc-reflect-cglib</artifactId>
             <version>${project.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>io.check.rpc</groupId>
+            <artifactId>checkrpc-reflect-javassist</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 </project>

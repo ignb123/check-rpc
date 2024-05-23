@@ -1,0 +1,1 @@
+javassist=io.check.rpc.reflect.javassist.JavassistReflectInvoker

@@ -5,17 +5,18 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>io.check.rpc</groupId>
-        <artifactId>check-rpc</artifactId>
+        <artifactId>checkrpc-reflect</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>checkrpc-reflect</artifactId>
-    <packaging>pom</packaging>
-    <modules>
-        <module>checkrpc-reflect-api</module>
-        <module>checkrpc-reflect-jdk</module>
-        <module>checkrpc-reflect-cglib</module>
-        <module>checkrpc-reflect-javassist</module>
-    </modules>
+    <artifactId>checkrpc-reflect-javassist</artifactId>
+
+    <dependencies>
+        <dependency>
+            <groupId>io.check.rpc</groupId>
+            <artifactId>checkrpc-reflect-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
 
 </project>
