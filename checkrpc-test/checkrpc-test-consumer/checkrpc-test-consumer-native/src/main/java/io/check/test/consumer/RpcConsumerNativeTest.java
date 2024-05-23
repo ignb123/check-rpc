@@ -14,7 +14,9 @@ public class RpcConsumerNativeTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(RpcConsumerNativeTest.class);
 
     public static void main(String[] args){
-        RpcClient rpcClient = new RpcClient("127.0.0.1:2181", "zookeeper", "1.0.0", "check", "jdk", 3000, false, false);
+        RpcClient rpcClient = new RpcClient("127.0.0.1:2181", "zookeeper",
+                "jdk","1.0.0", "check",
+                "protostuff", 3000, false, false);
         DemoService demoService = rpcClient.create(DemoService.class);
         String result = demoService.hello("check");
         LOGGER.info("返回的结果数据===>>> " + result);
@@ -26,7 +28,7 @@ public class RpcConsumerNativeTest {
 
     @Before
     public void initRpcClient(){
-        rpcClient = new RpcClient("127.0.0.1:2181", "zookeeper", "1.0.0",
+        rpcClient = new RpcClient("127.0.0.1:2181", "zookeeper", "jdk","1.0.0",
                 "check", "protostuff", 3000, false, false);
 
     }

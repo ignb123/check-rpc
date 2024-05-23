@@ -1,7 +1,9 @@
 package io.check.rpc.proxy.api;
 
 import io.check.rpc.proxy.api.config.ProxyConfig;
+import io.check.rpc.spi.annotation.SPI;
 
+@SPI
 public interface ProxyFactory {
 
     /**

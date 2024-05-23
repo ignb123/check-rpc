@@ -24,6 +24,12 @@
             <version>${project.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>io.check.rpc</groupId>
+            <artifactId>checkrpc-spi</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
     </dependencies>
 
 
