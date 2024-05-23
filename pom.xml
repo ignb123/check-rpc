@@ -21,6 +21,7 @@
         <module>checkrpc-proxy</module>
         <module>checkrpc-registry</module>
         <module>checkrpc-loadbalancer</module>
+        <module>checkrpc-spi</module>
     </modules>
 
     <properties>

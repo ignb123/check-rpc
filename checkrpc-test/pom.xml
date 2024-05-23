@@ -17,6 +17,7 @@
         <module>checkrpc-test-consumer</module>
         <module>checkrpc-test-api</module>
         <module>checkrpc-test-registry</module>
+        <module>checkrpc-test-spi</module>
     </modules>
 
     <dependencies>
