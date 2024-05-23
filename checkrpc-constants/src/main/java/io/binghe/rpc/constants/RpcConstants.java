@@ -47,5 +47,75 @@ public class RpcConstants {
      */
     public static final String PROXY_CGLIB = "cglib";
 
+    /**
+     * 初始化的方法
+     */
+    public static final String INIT_METHOD_NAME = "init";
 
+
+    /**
+     * zookeeper
+     */
+    public static final String REGISTRY_CENTER_ZOOKEEPER = "zookeeper";
+
+    /**
+     * nacos
+     */
+    public static final String REGISTRY_CENTER_NACOS = "nacos";
+
+    /**
+     * apoll
+     */
+    public static final String REGISTRY_CENTER_APOLL = "apoll";
+
+    /**
+     * etcd
+     */
+    public static final String REGISTRY_CENTER_ETCD = "etcd";
+
+    /**
+     * eureka
+     */
+    public static final String REGISTRY_CENTER_EUREKA = "eureka";
+
+
+    /**
+     * protostuff 序列化
+     */
+    public static final String SERIALIZATION_PROTOSTUFF = "protostuff";
+
+    /**
+     * FST 序列化
+     */
+    public static final String SERIALIZATION_FST = "fst";
+
+    /**
+     * hessian2 序列化
+     */
+    public static final String SERIALIZATION_HESSIAN2 = "hessian2";
+
+    /**
+     * jdk 序列化
+     */
+    public static final String SERIALIZATION_JDK = "jdk";
+
+    /**
+     * json 序列化
+     */
+    public static final String SERIALIZATION_JSON = "json";
+
+    /**
+     * kryo 序列化
+     */
+    public static final String SERIALIZATION_KRYO = "kryo";
+
+    /**
+     * 基于ZK的一致性Hash负载均衡
+     */
+    public static final String SERVICE_LOAD_BALANCER_ZKCONSISTENTHASH = "zkconsistenthash";
+
+    public static void main(String[] args){
+        String str = "test0000000000000000";
+        System.out.println(str.replace("0", ""));
+    }
 }

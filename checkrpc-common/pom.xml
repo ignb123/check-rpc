@@ -17,5 +17,11 @@
             <artifactId>checkrpc-annotation</artifactId>
             <version>${project.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>io.check.rpc</groupId>
+            <artifactId>checkrpc-constants</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 </project>
