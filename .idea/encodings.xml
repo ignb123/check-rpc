@@ -43,6 +43,8 @@
     <file url="file://$PROJECT_DIR$/checkrpc-proxy/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/checkrpc-reflect/checkrpc-reflect-api/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/checkrpc-reflect/checkrpc-reflect-api/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/checkrpc-reflect/checkrpc-reflect-cglib/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/checkrpc-reflect/checkrpc-reflect-cglib/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/checkrpc-reflect/checkrpc-reflect-jdk/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/checkrpc-reflect/checkrpc-reflect-jdk/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/checkrpc-reflect/src/main/java" charset="UTF-8" />
