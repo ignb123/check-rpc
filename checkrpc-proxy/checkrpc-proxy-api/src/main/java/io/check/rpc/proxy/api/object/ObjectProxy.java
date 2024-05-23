@@ -14,6 +14,11 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.concurrent.TimeUnit;
 
+
+/**
+ * 用于Java动态代理的对象代理实现
+ * @param <T>
+ */
 public class ObjectProxy <T> implements IAsyncObjectProxy,InvocationHandler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ObjectProxy.class);
