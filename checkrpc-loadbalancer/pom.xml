@@ -15,6 +15,7 @@
     <modules>
         <module>checkrpc-loadbalancer-api</module>
         <module>checkrpc-loadbalancer-random</module>
+        <module>checkrpc-loadbalancer-random-weight</module>
     </modules>
 
 </project>
