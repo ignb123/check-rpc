@@ -23,6 +23,12 @@
             <artifactId>checkrpc-serialization-jdk</artifactId>
             <version>${project.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>io.check.rpc</groupId>
+            <artifactId>checkrpc-serialization-json</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
 </project>

@@ -45,6 +45,8 @@
     <file url="file://$PROJECT_DIR$/checkrpc-serialization/checkrpc-serialization-api/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/checkrpc-serialization/checkrpc-serialization-jdk/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/checkrpc-serialization/checkrpc-serialization-jdk/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/checkrpc-serialization/checkrpc-serialization-json/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/checkrpc-serialization/checkrpc-serialization-json/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/checkrpc-serialization/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/checkrpc-serialization/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/checkrpc-spi/src/main/java" charset="UTF-8" />
