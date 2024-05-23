@@ -31,12 +31,19 @@ public class BaseServer implements Server {
     // 端口号
     protected int port = 27110;
 
-    // 存储的是实体类
+    /**
+     * 用于存储各种处理器或服务的映射，键值对形式，可根据键获取对应的处理器或服务对象。
+     */
     protected Map<String,Object> handlerMap = new HashMap<>();
 
-    // 注册中心
+    /**
+     * 注册中心服务，用于服务的注册与发现。
+     */
     protected RegistryService registryService;
 
+    /**
+     * 用于反射识别的类型标识，可能用于动态加载或识别特定的服务或处理器类型。
+     */
     private String reflectType;
 
     public BaseServer(String serverAddress, String registryAddress, String registryType, String reflectType){

@@ -5,19 +5,18 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>io.check.rpc</groupId>
-        <artifactId>check-rpc</artifactId>
+        <artifactId>checkrpc-proxy</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>checkrpc-proxy</artifactId>
-    <packaging>pom</packaging>
-    <modules>
-        <module>checkrpc-proxy-api</module>
-        <module>checkrpc-proxy-jdk</module>
-        <module>checkrpc-proxy-cglib</module>
-        <module>checkrpc-proxy-javassist</module>
-        <module>checkrpc-proxy-asm</module>
-    </modules>
+    <artifactId>checkrpc-proxy-javassist</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>io.check.rpc</groupId>
+            <artifactId>checkrpc-proxy-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
 
 </project>

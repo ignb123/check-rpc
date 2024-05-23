@@ -31,8 +31,12 @@
     <file url="file://$PROJECT_DIR$/checkrpc-provider/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/checkrpc-proxy/checkrpc-proxy-api/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/checkrpc-proxy/checkrpc-proxy-api/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/checkrpc-proxy/checkrpc-proxy-asm/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/checkrpc-proxy/checkrpc-proxy-asm/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/checkrpc-proxy/checkrpc-proxy-cglib/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/checkrpc-proxy/checkrpc-proxy-cglib/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/checkrpc-proxy/checkrpc-proxy-javassist/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/checkrpc-proxy/checkrpc-proxy-javassist/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/checkrpc-proxy/checkrpc-proxy-jdk/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/checkrpc-proxy/checkrpc-proxy-jdk/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/checkrpc-proxy/src/main/java" charset="UTF-8" />
