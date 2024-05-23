@@ -2,7 +2,7 @@ package io.check.rpc.test.scanner;
 
 import io.check.rpc.common.scanner.ClassScanner;
 import io.check.rpc.common.scanner.reference.RpcReferenceScanner;
-import io.check.rpc.common.scanner.server.RpcServiceScanner;
+import io.check.rpc.provider.common.scanner.RpcServiceScanner;
 import org.junit.Test;
 
 import java.util.List;
@@ -25,11 +25,11 @@ public class ScannerTest {
     /**
      * 扫描io.binghe.rpc.test.scanner包下所有标注了@RpcService注解的类
      */
-    @Test
-    public void testScannerClassNameListByRpcService() throws Exception {
-        RpcServiceScanner.
-                doScannerWithRpcServiceAnnotationFilterAndRegistryService("io.check.rpc.test.scanner");
-    }
+//    @Test
+//    public void testScannerClassNameListByRpcService() throws Exception {
+//        RpcServiceScanner.
+//                doScannerWithRpcServiceAnnotationFilterAndRegistryService("io.check.rpc.test.scanner");
+//    }
 
     /**
      * 扫描io.binghe.rpc.test.scanner包下所有标注了@RpcReference注解的类

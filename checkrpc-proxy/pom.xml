@@ -16,7 +16,6 @@
         <module>checkrpc-proxy-jdk</module>
         <module>checkrpc-proxy-cglib</module>
         <module>checkrpc-proxy-javassist</module>
-        <module>checkrpc-proxy-asm</module>
     </modules>
 
 

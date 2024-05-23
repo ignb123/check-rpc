@@ -17,5 +17,11 @@
             <artifactId>checkrpc-common</artifactId>
             <version>${project.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>io.check.rpc</groupId>
+            <artifactId>checkrpc-provider-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 </project>
