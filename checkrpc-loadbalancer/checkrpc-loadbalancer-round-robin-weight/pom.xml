@@ -5,18 +5,18 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>io.check.rpc</groupId>
-        <artifactId>check-rpc</artifactId>
+        <artifactId>checkrpc-loadbalancer</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>checkrpc-loadbalancer</artifactId>
+    <artifactId>checkrpc-loadbalancer-round-robin-weight</artifactId>
 
-    <packaging>pom</packaging>
-    <modules>
-        <module>checkrpc-loadbalancer-api</module>
-        <module>checkrpc-loadbalancer-random</module>
-        <module>checkrpc-loadbalancer-random-weight</module>
-        <module>checkrpc-loadbalancer-round-robin-weight</module>
-    </modules>
+    <dependencies>
+        <dependency>
+            <groupId>io.check.rpc</groupId>
+            <artifactId>checkrpc-loadbalancer-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
 
 </project>
