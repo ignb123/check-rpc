@@ -4,6 +4,9 @@ import io.check.rpc.codec.RpcDecoder;
 import io.check.rpc.codec.RpcEncoder;
 import io.check.rpc.provider.common.handler.RpcProviderHandler;
 import io.check.rpc.provider.common.server.api.Server.Server;
+import io.check.rpc.registry.api.RegistryService;
+import io.check.rpc.registry.api.config.RegistryConfig;
+import io.check.rpc.registry.zookeeper.ZookeeperRegistryService;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -31,9 +34,12 @@ public class BaseServer implements Server {
     // 存储的是实体类
     protected Map<String,Object> handlerMap = new HashMap<>();
 
+    // 注册中心
+    protected RegistryService registryService;
+
     private String reflectType;
 
-    public BaseServer(String serverAddress, String reflectType){
+    public BaseServer(String serverAddress, String registryAddress, String registryType, String reflectType){
         if(!StringUtils.isEmpty(serverAddress)){
             String[] serverArray = serverAddress.split(":");
             this.host = serverArray[0];
@@ -41,7 +47,21 @@ public class BaseServer implements Server {
         }
 
         this.reflectType = reflectType;
+        this.registryService = this.getRegistryService(registryAddress,registryType);
     }
+
+    private RegistryService getRegistryService(String registryAddress, String registryType) {
+        //TODO 后续扩展支持SPI
+        RegistryService registryService = null;
+        try {
+            registryService = new ZookeeperRegistryService();
+            registryService.init(new RegistryConfig(registryAddress, registryType));
+        }catch (Exception e){
+            logger.error("RPC Server init error", e);
+        }
+        return registryService;
+    }
+
     @Override
     public void startNettyServer() {
         // 创建用于接受进来的连接的EventLoopGroup
