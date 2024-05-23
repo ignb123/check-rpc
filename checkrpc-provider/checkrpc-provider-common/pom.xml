@@ -24,5 +24,10 @@
             <version>${project.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>io.check.rpc</groupId>
+            <artifactId>checkrpc-reflect-jdk</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 </project>

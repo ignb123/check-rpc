@@ -1,6 +1,5 @@
 package io.check.rpc.provider.common.handler;
 
-import io.binghe.rpc.constants.RpcConstants;
 import io.check.rpc.common.helper.RpcServiceHelper;
 import io.check.rpc.common.threadpool.ServerThreadPool;
 import io.check.rpc.protocol.RpcProtocol;
@@ -9,16 +8,15 @@ import io.check.rpc.protocol.enumeration.RpcType;
 import io.check.rpc.protocol.header.RpcHeader;
 import io.check.rpc.protocol.request.RpcRequest;
 import io.check.rpc.protocol.response.RpcResponse;
+import io.check.rpc.reflect.api.ReflectInvoker;
+import io.check.rpc.spi.loader.ExtensionLoader;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import net.sf.cglib.reflect.FastClass;
-import net.sf.cglib.reflect.FastMethod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.lang.reflect.Method;
 import java.util.Map;
 
 public class RpcProviderHandler extends SimpleChannelInboundHandler<RpcProtocol<RpcRequest>> {
@@ -27,12 +25,14 @@ public class RpcProviderHandler extends SimpleChannelInboundHandler<RpcProtocol<
 
     private final Map<String,Object> handlerMap;
 
-    //调用采用哪种类型调用真实方法
-    private final String reflectType;
+    /**
+     * reflectInvoker用于反射调用服务提供者的方法。
+     */
+    private ReflectInvoker reflectInvoker;
 
-    public RpcProviderHandler(Map<String,Object> handlerMap,String reflectType) {
+    public RpcProviderHandler(Map<String,Object> handlerMap, String reflectType) {
         this.handlerMap = handlerMap;
-        this.reflectType = reflectType;
+        this.reflectInvoker = ExtensionLoader.getExtension(ReflectInvoker.class,reflectType);
     }
 
     @Override
@@ -108,33 +108,6 @@ public class RpcProviderHandler extends SimpleChannelInboundHandler<RpcProtocol<
             }
         }
 
-        return invokeMethod(serviceBean,serviceClass,methodName, parameterTypes, parameters);
-    }
-
-    private Object invokeMethod(Object serviceBean, Class<?> serviceClass, String methodName, Class<?>[] parameterTypes, Object[] parameters) throws Throwable {
-        switch (reflectType){
-            case RpcConstants.REFLECT_TYPE_JDK:
-                return this.invokeJDKMethod(serviceBean, serviceClass, methodName,parameterTypes, parameters);
-            case RpcConstants.REFLECT_TYPE_CGLIB:
-                return this.invokeCGLibMethod(serviceBean, serviceClass, methodName,parameterTypes, parameters);
-            default:
-                throw new IllegalArgumentException("not support reflect type");
-        }
-    }
-
-    private Object invokeJDKMethod(Object serviceBean, Class<?> serviceClass,String methodName, Class<?>[] parameterTypes, Object[] parameters) throws Throwable {
-        // JDK reflect
-        logger.info("use jdk reflect type invoke method...");
-        Method method = serviceClass.getMethod(methodName, parameterTypes);
-        method.setAccessible(true);
-        return method.invoke(serviceBean, parameters);
-    }
-
-    private Object invokeCGLibMethod(Object serviceBean, Class<?> serviceClass,String methodName, Class<?>[] parameterTypes, Object[] parameters) throws Throwable {
-        // Cglib reflect
-        logger.info("use cglib reflect type invoke method...");
-        FastClass serviceFastClass = FastClass.create(serviceClass);
-        FastMethod serviceFastMethod = serviceFastClass.getMethod(methodName, parameterTypes);
-        return serviceFastMethod.invoke(serviceBean, parameters);
+        return this.reflectInvoker.invokeMethod(serviceBean,serviceClass,methodName, parameterTypes, parameters);
     }
 }

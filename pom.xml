@@ -22,6 +22,7 @@
         <module>checkrpc-registry</module>
         <module>checkrpc-loadbalancer</module>
         <module>checkrpc-spi</module>
+        <module>checkrpc-reflect</module>
     </modules>
 
     <properties>
