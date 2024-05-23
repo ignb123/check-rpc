@@ -20,6 +20,7 @@
         <module>checkrpc-consumer</module>
         <module>checkrpc-proxy</module>
         <module>checkrpc-registry</module>
+        <module>checkrpc-loadbalancer</module>
     </modules>
 
     <properties>

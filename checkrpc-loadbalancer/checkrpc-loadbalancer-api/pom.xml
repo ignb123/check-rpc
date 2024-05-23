@@ -5,11 +5,12 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>io.check.rpc</groupId>
-        <artifactId>checkrpc-registry</artifactId>
+        <artifactId>checkrpc-loadbalancer</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>checkrpc-registry-api</artifactId>
+    <artifactId>checkrpc-loadbalancer-api</artifactId>
+
 
     <dependencies>
         <dependency>
@@ -17,13 +18,6 @@
             <artifactId>checkrpc-protocol</artifactId>
             <version>${project.version}</version>
         </dependency>
-
-        <dependency>
-            <groupId>io.check.rpc</groupId>
-            <artifactId>checkrpc-loadbalancer-random</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
     </dependencies>
 
 

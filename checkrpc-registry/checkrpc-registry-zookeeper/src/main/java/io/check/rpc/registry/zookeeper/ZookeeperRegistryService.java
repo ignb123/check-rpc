@@ -1,6 +1,8 @@
 package io.check.rpc.registry.zookeeper;
 
 import io.check.rpc.common.helper.RpcServiceHelper;
+import io.check.rpc.loadbalancer.api.ServiceLoadBalancer;
+import io.check.rpc.loadbalancer.random.RandomServiceLoadBalancer;
 import io.check.rpc.protocol.meta.ServiceMeta;
 import io.check.rpc.registry.api.RegistryService;
 import io.check.rpc.registry.api.config.RegistryConfig;
@@ -39,6 +41,11 @@ public class ZookeeperRegistryService implements RegistryService {
      */
     private ServiceDiscovery<ServiceMeta> serviceDiscovery;
 
+    /**
+     * 服务负载均衡类实例
+     */
+    private ServiceLoadBalancer<ServiceInstance<ServiceMeta>> serviceLoadBalancer;
+
     @Override
     public void register(ServiceMeta serviceMeta) throws Exception {
         ServiceInstance<ServiceMeta> serviceInstance = ServiceInstance
@@ -69,20 +76,11 @@ public class ZookeeperRegistryService implements RegistryService {
         Collection<ServiceInstance<ServiceMeta>> serviceInstances =
                 serviceDiscovery.queryForInstances(serviceName);
         ServiceInstance<ServiceMeta> instance =
-                this.selectOneServiceInstance((List<ServiceInstance<ServiceMeta>>) serviceInstances);
+                serviceLoadBalancer.select((List<ServiceInstance<ServiceMeta>>) serviceInstances, invokerHashCode);
         if (instance != null) {
             return instance.getPayload();
         }
         return null;
-    }
-
-    private ServiceInstance<ServiceMeta> selectOneServiceInstance(List<ServiceInstance<ServiceMeta>> serviceInstances) {
-        if (serviceInstances == null || serviceInstances.isEmpty()) {
-            return null;
-        }
-        Random random = new Random();
-        int index = random.nextInt(serviceInstances.size());
-        return serviceInstances.get(index);
     }
 
     @Override
@@ -92,6 +90,9 @@ public class ZookeeperRegistryService implements RegistryService {
 
     @Override
     public void init(RegistryConfig registryConfig) throws Exception{
+
+        this.serviceLoadBalancer = new RandomServiceLoadBalancer<>();
+
         // 创建 CuratorFramework 客户端实例，并配置重试策略
         CuratorFramework client = CuratorFrameworkFactory
                 .newClient(registryConfig.getRegistryAddr(),

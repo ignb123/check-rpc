@@ -41,7 +41,7 @@ public class RpcConsumerNativeTest {
     @Test
     public void testAsyncInterfaceRpc() throws Exception {
         IAsyncObjectProxy demoService = rpcClient.createAsync(DemoService.class);
-        RPCFuture future = demoService.call("hello", "binghe");
+        RPCFuture future = demoService.call("hello", "check");
         LOGGER.info("返回的结果数据===>>> " + future.get());
         rpcClient.shutdown();
     }
