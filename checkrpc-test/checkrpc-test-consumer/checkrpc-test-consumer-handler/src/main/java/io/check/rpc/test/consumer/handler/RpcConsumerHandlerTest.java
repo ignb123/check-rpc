@@ -1,5 +1,6 @@
 package io.check.rpc.test.consumer.handler;
 
+import io.check.rpc.common.exception.RegistryException;
 import io.check.rpc.consumer.common.RpcConsumer;
 
 import io.check.rpc.protocol.RpcProtocol;
@@ -7,15 +8,19 @@ import io.check.rpc.protocol.header.RpcHeaderFactory;
 import io.check.rpc.protocol.request.RpcRequest;
 import io.check.rpc.proxy.api.callback.AsyncRPCCallback;
 import io.check.rpc.proxy.api.future.RPCFuture;
+import io.check.rpc.registry.api.RegistryService;
+import io.check.rpc.registry.api.config.RegistryConfig;
+import io.check.rpc.registry.zookeeper.ZookeeperRegistryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.StringUtils;
 
 public class RpcConsumerHandlerTest {
 
     private final static Logger logger = LoggerFactory.getLogger(RpcConsumerHandlerTest.class);
     public static void main(String[] args) throws Exception {
         RpcConsumer consumer = RpcConsumer.getInstance();
-        RPCFuture future = consumer.sendRequest(getRpcRequestProtocol());
+        RPCFuture future = consumer.sendRequest(getRpcRequestProtocol(),getRegistryService("127.0.0.1:2181", "zookeeper"));
         future.addCallback(new AsyncRPCCallback() {
             @Override
             public void onSuccess(Object result) {
@@ -30,6 +35,21 @@ public class RpcConsumerHandlerTest {
         Thread.sleep(200);
         consumer.close();
     }
+    private static RegistryService getRegistryService(String registryAddress, String registryType) {
+        if (StringUtils.isEmpty(registryType)){
+            throw new IllegalArgumentException("registry type is null");
+        }
+        //TODO 后续SPI扩展
+        RegistryService registryService = new ZookeeperRegistryService();
+        try {
+            registryService.init(new RegistryConfig(registryAddress, registryType));
+        } catch (Exception e) {
+            logger.error("RpcClient init registry service throws exception:{}", e);
+            throw new RegistryException(e.getMessage(), e);
+        }
+        return registryService;
+    }
+
     private static RpcProtocol<RpcRequest> getRpcRequestProtocol(){
         //模拟发送数据
         RpcProtocol<RpcRequest> protocol = new RpcProtocol<RpcRequest>();

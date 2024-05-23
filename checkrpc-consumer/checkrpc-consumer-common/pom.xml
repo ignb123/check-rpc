@@ -17,11 +17,19 @@
             <artifactId>checkrpc-codec</artifactId>
             <version>${project.version}</version>
         </dependency>
+
         <dependency>
             <groupId>io.check.rpc</groupId>
             <artifactId>checkrpc-proxy-jdk</artifactId>
             <version>${project.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>io.check.rpc</groupId>
+            <artifactId>checkrpc-registry-zookeeper</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
     </dependencies>
 
 </project>

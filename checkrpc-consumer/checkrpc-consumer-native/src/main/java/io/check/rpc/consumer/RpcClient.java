@@ -1,12 +1,16 @@
 package io.check.rpc.consumer;
 
+import io.check.rpc.common.exception.RegistryException;
 import io.check.rpc.consumer.common.RpcConsumer;
-import io.check.rpc.proxy.api.BaseProxyFactory;
 import io.check.rpc.proxy.api.ProxyFactory;
 import io.check.rpc.proxy.api.async.IAsyncObjectProxy;
 import io.check.rpc.proxy.api.config.ProxyConfig;
 import io.check.rpc.proxy.api.object.ObjectProxy;
 import io.check.rpc.proxy.jdk.JdkProxyFactory;
+import io.check.rpc.registry.api.RegistryService;
+import io.check.rpc.registry.api.config.RegistryConfig;
+import io.check.rpc.registry.zookeeper.ZookeeperRegistryService;
+import org.springframework.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,23 +48,41 @@ public class RpcClient {
      */
     private boolean oneway;
 
-    public RpcClient(String serviceVersion, String serviceGroup, String serializationType, long timeout, boolean async, boolean oneway) {
+    private RegistryService registryService;
+
+    public RpcClient(String registryAddress, String registryType, String serviceVersion, String serviceGroup, String serializationType, long timeout, boolean async, boolean oneway) {
         this.serviceVersion = serviceVersion;
         this.timeout = timeout;
         this.serviceGroup = serviceGroup;
         this.serializationType = serializationType;
         this.async = async;
         this.oneway = oneway;
+        this.registryService = this.getRegistryService(registryAddress,registryType);
+    }
+
+    private RegistryService getRegistryService(String registryAddress, String registryType) {
+        if (StringUtils.isEmpty(registryType)){
+            throw new IllegalArgumentException("registry type is null");
+        }
+        //TODO 后续SPI扩展
+        RegistryService registryService = new ZookeeperRegistryService();
+        try {
+            registryService.init(new RegistryConfig(registryAddress, registryType));
+        }catch (Exception e){
+            logger.error("RpcClient init registry service throws exception:{}", e);
+            throw new RegistryException(e.getMessage(), e);
+        }
+        return registryService;
     }
 
     public <T> T create(Class<T> interfaceClass) {
         ProxyFactory proxyFactory = new JdkProxyFactory<>();
-        proxyFactory.init(new ProxyConfig(interfaceClass, serviceVersion, serviceGroup, timeout, RpcConsumer.getInstance(), serializationType, async, oneway));
+        proxyFactory.init(new ProxyConfig(interfaceClass, serviceVersion, serviceGroup, timeout, RpcConsumer.getInstance(), serializationType, async, oneway, registryService));
         return proxyFactory.getProxy(interfaceClass);
     }
 
     public <T> IAsyncObjectProxy createAsync(Class<T> interfaceClass) {
-        return new ObjectProxy<T>(interfaceClass, serviceVersion, serviceGroup, serializationType, timeout, RpcConsumer.getInstance(), async, oneway);    }
+        return new ObjectProxy<T>(interfaceClass, serviceVersion, serviceGroup, serializationType, timeout, RpcConsumer.getInstance(), async, oneway, registryService);    }
     public void shutdown() {
         RpcConsumer.getInstance().close();
     }
