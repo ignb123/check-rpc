@@ -29,6 +29,12 @@
     <file url="file://$PROJECT_DIR$/checkrpc-proxy/checkrpc-proxy-jdk/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/checkrpc-proxy/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/checkrpc-proxy/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/checkrpc-registry/checkrpc-registry-api/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/checkrpc-registry/checkrpc-registry-api/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/checkrpc-registry/checkrpc-registry-zookeeper/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/checkrpc-registry/checkrpc-registry-zookeeper/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/checkrpc-registry/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/checkrpc-registry/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/checkrpc-serialization/checkrpc-serialization-api/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/checkrpc-serialization/checkrpc-serialization-api/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/checkrpc-serialization/checkrpc-serialization-jdk/src/main/java" charset="UTF-8" />
@@ -47,6 +53,8 @@
     <file url="file://$PROJECT_DIR$/checkrpc-test/checkrpc-test-consumer/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/checkrpc-test/checkrpc-test-provider/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/checkrpc-test/checkrpc-test-provider/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/checkrpc-test/checkrpc-test-registry/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/checkrpc-test/checkrpc-test-registry/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/checkrpc-test/checkrpc-test-scanner/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/checkrpc-test/checkrpc-test-scanner/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/checkrpc-test/src/main/java" charset="UTF-8" />

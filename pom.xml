@@ -19,6 +19,7 @@
         <module>checkrpc-serialization</module>
         <module>checkrpc-consumer</module>
         <module>checkrpc-proxy</module>
+        <module>checkrpc-registry</module>
     </modules>
 
     <properties>
