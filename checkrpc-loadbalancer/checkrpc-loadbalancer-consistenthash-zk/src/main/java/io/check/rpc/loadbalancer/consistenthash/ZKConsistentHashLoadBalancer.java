@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 @SPIClass
-public class ZKConsistentHashLoadBalancer implements ServiceLoadBalancer<ServiceInstance<ServiceMeta>> {
+public class ZKConsistentHashLoadBalancer implements ServiceLoadBalancer<ServiceMeta> {
 
     private final static int VIRTUAL_NODE_SIZE = 10;
 
@@ -21,18 +21,18 @@ public class ZKConsistentHashLoadBalancer implements ServiceLoadBalancer<Service
     private final Logger logger = LoggerFactory.getLogger(ZKConsistentHashLoadBalancer.class);
 
     @Override
-    public ServiceInstance<ServiceMeta> select(List<ServiceInstance<ServiceMeta>> servers, int hashCode, String sourceIp) {
+    public ServiceMeta select(List<ServiceMeta> servers, int hashCode, String sourceIp) {
         logger.info("基于Zookeeper的一致性Hash算法的负载均衡策略...");
-        TreeMap<Integer,ServiceInstance<ServiceMeta>> ring = makeConsistentHashRing(servers);
+        TreeMap<Integer,ServiceMeta> ring = makeConsistentHashRing(servers);
         return allocateNode(ring, hashCode);
     }
 
-    private ServiceInstance<ServiceMeta> allocateNode(TreeMap<Integer, ServiceInstance<ServiceMeta>> ring, int hashCode) {
+    private ServiceMeta allocateNode(TreeMap<Integer, ServiceMeta> ring, int hashCode) {
         /**
          * 查找并获取大于等于给定hashCode的映射条目的入口。
          * 该方法用于在服务环（ring）中定位特定服务实例的入口，以便进行服务调用或负载均衡等操作。
          */
-        Map.Entry<Integer, ServiceInstance<ServiceMeta>> entry = ring.ceilingEntry(hashCode);
+        Map.Entry<Integer, ServiceMeta> entry = ring.ceilingEntry(hashCode);
         if (entry == null) {
             entry = ring.firstEntry();
         }
@@ -42,9 +42,9 @@ public class ZKConsistentHashLoadBalancer implements ServiceLoadBalancer<Service
         return entry.getValue();
     }
 
-    private TreeMap<Integer, ServiceInstance<ServiceMeta>> makeConsistentHashRing(List<ServiceInstance<ServiceMeta>> servers) {
-        TreeMap<Integer, ServiceInstance<ServiceMeta>> ring = new TreeMap<>();
-        for(ServiceInstance<ServiceMeta> instance : servers){
+    private TreeMap<Integer, ServiceMeta> makeConsistentHashRing(List<ServiceMeta> servers) {
+        TreeMap<Integer, ServiceMeta> ring = new TreeMap<>();
+        for(ServiceMeta instance : servers){
             for (int i = 0; i < VIRTUAL_NODE_SIZE; i++) {
                 ring.put((buildServiceInstanceKey(instance) + VIRTUAL_NODE_SPLIT + i).hashCode(), instance);
             }
@@ -52,9 +52,8 @@ public class ZKConsistentHashLoadBalancer implements ServiceLoadBalancer<Service
         return ring;
     }
 
-    private String buildServiceInstanceKey(ServiceInstance<ServiceMeta> instance) {
-        ServiceMeta payload = instance.getPayload();
-        return String.join(":",payload.getServiceAddr(),
-                String.valueOf(payload.getServicePort()));
+    private String buildServiceInstanceKey(ServiceMeta instance) {
+        return String.join(":",instance.getServiceAddr(),
+                String.valueOf(instance.getServicePort()));
     }
 }

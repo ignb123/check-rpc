@@ -4,6 +4,7 @@ import com.alibaba.fastjson2.JSONObject;
 import io.check.rpc.consumer.common.context.RpcContext;
 
 import io.check.rpc.protocol.RpcProtocol;
+import io.check.rpc.protocol.enumeration.RpcType;
 import io.check.rpc.protocol.header.RpcHeader;
 import io.check.rpc.protocol.request.RpcRequest;
 import io.check.rpc.protocol.response.RpcResponse;
@@ -79,8 +80,35 @@ public class RpcConsumerHandler extends SimpleChannelInboundHandler<RpcProtocol<
             return;
         }
         // 记录接收到的数据
-        logger.info("服务消费者接收到的数据===>>>{}", JSONObject.toJSONString(protocol));
+        this.handlerMessage(protocol);
+    }
+
+    private void handlerMessage(RpcProtocol<RpcResponse> protocol){
         RpcHeader header = protocol.getHeader();
+        // 心跳消息
+        if(header.getMsgType() == (byte) RpcType.HEARTBEAT_TO_CONSUMER.getType()){
+            this.handlerHeartbeatMessage(protocol);
+        }else if(header.getMsgType() == (byte) RpcType.RESPONSE.getType()){ // 响应消息
+            this.handlerResponseMessage(protocol,header);
+        }
+    }
+
+    /**
+     * 处理心跳消息，这里由于心跳是服务消费者向服务提供者发起，服务提供者接收到心跳消息后，
+     * 会立即进行响应。所以，在服务消费者接收到服务提供者响应的心跳消息后，可不必在任何处理，打印日志即可
+     * @param protocol
+     */
+    private void handlerHeartbeatMessage(RpcProtocol<RpcResponse> protocol) {
+        //此处简单打印即可,实际场景可不做处理
+        logger.info("receive service provider heartbeat message:{}", protocol.getBody().getResult());
+    }
+
+    /**
+     * 获取到响应的结果信息后，会唤醒阻塞的线程，向客户端响应数据
+     * @param protocol
+     * @param header
+     */
+    private void handlerResponseMessage(RpcProtocol<RpcResponse> protocol, RpcHeader header) {
         long requestId = header.getRequestId();
         RPCFuture rpcFuture = pendingRPC.remove(requestId);
         if(rpcFuture != null){

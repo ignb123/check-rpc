@@ -1,5 +1,6 @@
 package io.check.rpc.provider.common.handler;
 
+import io.binghe.rpc.constants.RpcConstants;
 import io.check.rpc.common.helper.RpcServiceHelper;
 import io.check.rpc.common.threadpool.ServerThreadPool;
 import io.check.rpc.protocol.RpcProtocol;
@@ -38,48 +39,87 @@ public class RpcProviderHandler extends SimpleChannelInboundHandler<RpcProtocol<
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, RpcProtocol<RpcRequest> protocol) throws Exception {
         ServerThreadPool.submit(() -> {
-            RpcHeader header = protocol.getHeader();
-            //将header中的消息类型设置为响应类型的消息
-            header.setMsgType((byte) RpcType.RESPONSE.getType());
-            RpcRequest request = protocol.getBody();
-            logger.debug("Receive request " + header.getRequestId());
-            //构建响应协议数据
-            RpcProtocol<RpcResponse> responseRpcProtocol = new RpcProtocol<>();
-
-            RpcResponse response = new RpcResponse();
-            try {
-                Object result = handle(request);
-                response.setResult(result);
-                response.setAsync(request.isAsync());
-                response.setOneway(request.isOneway());
-                header.setStatus((byte) RpcStatus.SUCCESS.getCode());
-            }catch (Throwable t){
-                response.setError(t.toString());
-                header.setStatus((byte) RpcStatus.FAIL.getCode());
-                logger.error("RPC Server handle request error",t);
-            }
-
-            responseRpcProtocol.setHeader(header);
-            responseRpcProtocol.setBody(response);
-            /**
-             * 将指定的responseRpcProtocol通过与上下文关联的通道写入并刷新。
-             * 同时，在写入和刷新操作完成时，会记录一条调试日志。
-             *
-             * @param ctx 与发送响应相关的通道上下文，提供了与通道交互的方法，如写入和刷新数据。
-             * @param responseRpcProtocol 要发送的响应数据的RpcProtocol对象。此对象将被序列化并通过通道在网络上传输。
-             */
-            ctx.writeAndFlush(responseRpcProtocol)
-                    .addListener(new ChannelFutureListener() {
-                        @Override
-                        public void operationComplete(ChannelFuture channelFuture) throws Exception {
-                            // 记录一条调试日志，表示已完成针对特定请求的响应发送。
-                            logger.debug("Send response for request " + header.getRequestId());
-                        }
-                    });
-
+            RpcProtocol<RpcResponse> responseRpcProtocol = handlerMessage(protocol);
+            ctx.writeAndFlush(responseRpcProtocol).addListener(new ChannelFutureListener() {
+                @Override
+                public void operationComplete(ChannelFuture channelFuture) throws Exception {
+                    logger.debug("Send response for request " + protocol.getHeader().getRequestId());
+                }
+            });
         });
     }
 
+    /**
+     * 处理消息
+     */
+    private RpcProtocol<RpcResponse> handlerMessage(RpcProtocol<RpcRequest> protocol) {
+        RpcProtocol<RpcResponse> responseRpcProtocol = null;
+        RpcHeader header = protocol.getHeader();
+        //心跳消息
+        if(header.getMsgType() == (byte) RpcType.HEARTBEAT_FROM_CONSUMER.getType()){
+            responseRpcProtocol = handlerHeartbeatMessage(protocol, header);
+        }else if (header.getMsgType() == (byte) RpcType.REQUEST.getType()){ // 请求消息
+            responseRpcProtocol = handlerRequestMessage(protocol, header);
+        }
+
+        return responseRpcProtocol;
+    }
+
+    /**
+     * 处理服务消费者发送过来的心跳消息，按照自定义网络传输协议，将消息体封装成pong消息返回给服务消费者
+     * @param protocol
+     * @param header
+     * @return
+     */
+    private RpcProtocol<RpcResponse> handlerHeartbeatMessage(RpcProtocol<RpcRequest> protocol, RpcHeader header) {
+        header.setMsgType((byte) RpcType.HEARTBEAT_TO_CONSUMER.getType());
+        RpcRequest request = protocol.getBody();
+        RpcProtocol<RpcResponse> responseRpcProtocol = new RpcProtocol<RpcResponse>();
+
+        RpcResponse response = new RpcResponse();
+        response.setResult(RpcConstants.HEARTBEAT_PONG);
+        response.setAsync(request.isAsync());
+        response.setOneway(request.isOneway());
+        header.setStatus((byte) RpcStatus.SUCCESS.getCode());
+        responseRpcProtocol.setHeader(header);
+        responseRpcProtocol.setBody(response);
+        return responseRpcProtocol;
+
+    }
+
+    /**
+     * 处理服务消费者发送过来的请求消息，按照自定义网络传输协议，解析出调用真实方法的信息，
+     * 调用真实方法后，并按照自定义网络传输协议，将调用真实方法的结果封装成响应协议返回给服务消费者
+     * @param protocol
+     * @param header
+     * @return
+     */
+    private RpcProtocol<RpcResponse> handlerRequestMessage(RpcProtocol<RpcRequest> protocol, RpcHeader header) {
+        header.setMsgType((byte) RpcType.RESPONSE.getType());
+        RpcRequest request = protocol.getBody();
+
+        logger.debug("Receive request " + header.getRequestId());
+
+        RpcProtocol<RpcResponse> responseRpcProtocol = new RpcProtocol<RpcResponse>();
+        RpcResponse response = new RpcResponse();
+        try{
+            Object result = handle(request);
+            response.setResult(result);
+            response.setAsync(request.isAsync());
+            response.setOneway(request.isOneway());
+
+            header.setStatus((byte) RpcStatus.SUCCESS.getCode());
+        }catch (Throwable t) {
+            response.setError(t.toString());
+            header.setStatus((byte) RpcStatus.FAIL.getCode());
+            logger.error("RPC Server handle request error",t);
+        }
+
+        responseRpcProtocol.setHeader(header);
+        responseRpcProtocol.setBody(response);
+
+        return responseRpcProtocol;
+    }
     private Object handle(RpcRequest request) throws Throwable {
         String serviceKey = RpcServiceHelper.buildServiceKey(request.getClassName(),
                 request.getVersion(),request.getGroup());

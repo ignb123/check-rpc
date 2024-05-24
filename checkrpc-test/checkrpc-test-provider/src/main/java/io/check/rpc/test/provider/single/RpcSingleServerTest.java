@@ -7,8 +7,8 @@ public class RpcSingleServerTest {
     @Test
     public void startRpcSingleServer(){
         RpcSingleServer singleServer = new RpcSingleServer("127.0.0.1:27880",
-                "http://127.0.0.1:2181",
-                "zookeeper","robinweight", "io.check.rpc.test",
+                "127.0.0.1:2181",
+                "zookeeper","zkconsistenthash", "io.check.rpc.test",
                 "javassist");
         singleServer.startNettyServer();
     }
