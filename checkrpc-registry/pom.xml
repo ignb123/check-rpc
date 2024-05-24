@@ -15,5 +15,6 @@
     <modules>
         <module>checkrpc-registry-api</module>
         <module>checkrpc-registry-zookeeper</module>
+        <module>checkrpc-registry-etcd</module>
     </modules>
 </project>

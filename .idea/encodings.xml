@@ -63,6 +63,8 @@
     <file url="file://$PROJECT_DIR$/checkrpc-reflect/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/checkrpc-registry/checkrpc-registry-api/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/checkrpc-registry/checkrpc-registry-api/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/checkrpc-registry/checkrpc-registry-etcd/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/checkrpc-registry/checkrpc-registry-etcd/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/checkrpc-registry/checkrpc-registry-zookeeper/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/checkrpc-registry/checkrpc-registry-zookeeper/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/checkrpc-registry/src/main/java" charset="UTF-8" />
