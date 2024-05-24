@@ -6,6 +6,7 @@ import io.check.rpc.common.threadpool.ClientThreadPool;
 import io.check.rpc.consumer.common.handler.RpcConsumerHandler;
 import io.check.rpc.consumer.common.helper.RpcConsumerHandlerHelper;
 import io.check.rpc.consumer.common.initializer.RpcConsumerInitializer;
+import io.check.rpc.consumer.common.manager.ConsumerConnectionManager;
 import io.check.rpc.loadbalancer.context.ConnectionsContext;
 import io.check.rpc.protocol.RpcProtocol;
 import io.check.rpc.protocol.meta.ServiceMeta;
@@ -24,6 +25,9 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class RpcConsumer implements Consumer {
 
@@ -35,12 +39,19 @@ public class RpcConsumer implements Consumer {
 
     private final String localIp;
 
+    /**
+     * 定时任务类型的线程池，后续在服务消费者端会使用这个定时任务线程池向服务提供者定时发送心跳数据
+     */
+    private ScheduledExecutorService executorService;
+
     private RpcConsumer() {
         localIp = IpUtils.getLocalHostIp();
         bootstrap = new Bootstrap();
         eventLoopGroup = new NioEventLoopGroup(4);
         bootstrap.group(eventLoopGroup).channel(NioSocketChannel.class)
                 .handler(new RpcConsumerInitializer());
+        //TODO 启动心跳，后续优化
+        this.startHeartbeat();
     }
 
     public static RpcConsumer getInstance(){
@@ -54,6 +65,31 @@ public class RpcConsumer implements Consumer {
         return instance;
     }
 
+    /**
+     * 启动心跳监测线程。该方法会初始化一个定时任务线程池，并调度两个定时任务：
+     * 1. 扫描并处理所有不活跃的连接；
+     * 2. 定期发送ping消息。
+     */
+    private void startHeartbeat() {
+        // 初始化线程池，用于执行定时任务
+        executorService = Executors.newScheduledThreadPool(2);
+
+        // 定时任务：扫描并处理所有不活跃的连接
+        // 10秒后开始第一次扫描，之后每隔60秒扫描一次
+        executorService.scheduleAtFixedRate(() -> {
+            logger.info("=============scanNotActiveChannel============");
+            ConsumerConnectionManager.scanNotActiveChannel();
+        }, 10, 60, TimeUnit.SECONDS);
+
+        // 定时任务：发送ping消息
+        // 3秒后开始第一次发送ping消息，之后每隔30秒发送一次
+        executorService.scheduleAtFixedRate(() -> {
+            logger.info("=============broadcastPingMessageFromConsumer============");
+            ConsumerConnectionManager.broadcastPingMessageFromConsumer();
+        }, 3, 30, TimeUnit.SECONDS);
+    }
+
+
     public void close() {
         // 关闭RPC客户端处理器，断开所有与服务器的连接
         RpcConsumerHandlerHelper.closeRpcClientHandler();
@@ -63,6 +99,8 @@ public class RpcConsumer implements Consumer {
 
         // 关闭客户端线程池，停止接受新的任务并等待已提交任务完成
         ClientThreadPool.shutdown();
+
+        executorService.shutdown();
 
     }
 
@@ -99,6 +137,7 @@ public class RpcConsumer implements Consumer {
         channelFuture.addListener((ChannelFutureListener) listener -> {
             if (channelFuture.isSuccess()) {
                 logger.info("connect rpc server {} on port {} success.", serviceMeta.getServiceAddr(), serviceMeta.getServicePort());
+                //添加连接信息，在服务消费者端记录每个服务提供者实例的连接次数
                 ConnectionsContext.add(serviceMeta);
             }
             else {

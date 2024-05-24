@@ -23,6 +23,7 @@
         <module>checkrpc-loadbalancer</module>
         <module>checkrpc-spi</module>
         <module>checkrpc-reflect</module>
+        <module>checkrpc-demo</module>
     </modules>
 
     <properties>

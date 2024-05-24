@@ -1,6 +1,7 @@
 package io.check.rpc.consumer.common.handler;
 
 import com.alibaba.fastjson2.JSONObject;
+import io.check.rpc.consumer.common.cache.ConsumerChannelCache;
 import io.check.rpc.consumer.common.context.RpcContext;
 
 import io.check.rpc.protocol.RpcProtocol;
@@ -54,6 +55,7 @@ public class RpcConsumerHandler extends SimpleChannelInboundHandler<RpcProtocol<
         super.channelActive(ctx);
         // 记录远程对端地址
         this.remotePeer = this.channel.remoteAddress();
+        ConsumerChannelCache.add(channel);
     }
 
     /**
@@ -68,6 +70,19 @@ public class RpcConsumerHandler extends SimpleChannelInboundHandler<RpcProtocol<
         this.channel = ctx.channel();
     }
 
+    @Override
+    public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
+        super.channelUnregistered(ctx);
+        ConsumerChannelCache.remove(ctx.channel());
+    }
+
+    @Override
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        super.channelInactive(ctx);
+        ConsumerChannelCache.remove(ctx.channel());
+    }
+
+
     /**
      * 处理从服务提供者接收到的数据。
      * @param ctx 通道上下文
@@ -80,14 +95,14 @@ public class RpcConsumerHandler extends SimpleChannelInboundHandler<RpcProtocol<
             return;
         }
         // 记录接收到的数据
-        this.handlerMessage(protocol);
+        this.handlerMessage(protocol,ctx.channel());
     }
 
-    private void handlerMessage(RpcProtocol<RpcResponse> protocol){
+    private void handlerMessage(RpcProtocol<RpcResponse> protocol, Channel channel){
         RpcHeader header = protocol.getHeader();
         // 心跳消息
         if(header.getMsgType() == (byte) RpcType.HEARTBEAT_TO_CONSUMER.getType()){
-            this.handlerHeartbeatMessage(protocol);
+            this.handlerHeartbeatMessage(protocol,channel);
         }else if(header.getMsgType() == (byte) RpcType.RESPONSE.getType()){ // 响应消息
             this.handlerResponseMessage(protocol,header);
         }
@@ -98,9 +113,10 @@ public class RpcConsumerHandler extends SimpleChannelInboundHandler<RpcProtocol<
      * 会立即进行响应。所以，在服务消费者接收到服务提供者响应的心跳消息后，可不必在任何处理，打印日志即可
      * @param protocol
      */
-    private void handlerHeartbeatMessage(RpcProtocol<RpcResponse> protocol) {
+    private void handlerHeartbeatMessage(RpcProtocol<RpcResponse> protocol, Channel channel) {
         //此处简单打印即可,实际场景可不做处理
-        logger.info("receive service provider heartbeat message:{}", protocol.getBody().getResult());
+        logger.info("receive service provider heartbeat message, the provider is: {}, the heartbeat message is: {}",
+                channel.remoteAddress(), protocol.getBody().getResult());
     }
 
     /**

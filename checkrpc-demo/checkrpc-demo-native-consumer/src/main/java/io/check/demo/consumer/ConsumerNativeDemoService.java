@@ -1,52 +1,38 @@
-package io.check.test.consumer;
+package io.check.demo.consumer;
 
 import io.check.rpc.consumer.RpcClient;
+import io.check.rpc.demo.api.DemoService;
 import io.check.rpc.proxy.api.async.IAsyncObjectProxy;
 import io.check.rpc.proxy.api.future.RPCFuture;
-import io.check.rpc.test.api.DemoService;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class RpcConsumerNativeTest {
+public class ConsumerNativeDemoService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(RpcConsumerNativeTest.class);
 
-    public static void main(String[] args){
-        RpcClient rpcClient = new RpcClient("127.0.0.1:2181", "zookeeper",
-                "zkconsistenthash","cglib","1.0.0", "check",
-                "protostuff", 3000, false, false);
-        DemoService demoService = rpcClient.create(DemoService.class);
-        String result = demoService.hello("check");
-        LOGGER.info("返回的结果数据===>>> " + result);
-        rpcClient.shutdown();
-    }
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(ConsumerNativeDemoService.class);
 
     private RpcClient rpcClient;
 
     @Before
     public void initRpcClient(){
         rpcClient = new RpcClient("127.0.0.1:2181", "zookeeper",
-                "zkconsistenthash","cglib","1.0.0",
-                "check", "protostuff",
+                "leastconnections","cglib",
+                "1.0.0", "check", "protostuff",
                 3000, false, false);
-
     }
 
+
     @Test
-    public void testInterfaceRpc(){
+    public void testInterfaceRpc() throws InterruptedException {
         DemoService demoService = rpcClient.create(DemoService.class);
         String result = demoService.hello("check");
         LOGGER.info("返回的结果数据===>>> " + result);
-        rpcClient.shutdown();
+        //rpcClient.shutdown();
         while (true){
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
+            Thread.sleep(1000);
         }
     }
 

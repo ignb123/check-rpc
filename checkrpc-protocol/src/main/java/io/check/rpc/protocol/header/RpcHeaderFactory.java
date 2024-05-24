@@ -15,4 +15,14 @@ public class RpcHeaderFactory {
         rpcHeader.setSerializationType(serializationType);
         return rpcHeader;
     }
+
+    public static RpcHeader getRequestHeader(String serializationType, int msgType){
+        RpcHeader rpcHeader = new RpcHeader();
+        rpcHeader.setRequestId(IdFactory.getId());
+        rpcHeader.setMagic(RpcConstants.MAGIC);
+        rpcHeader.setMsgType((byte) RpcType.findByType(msgType).getType());
+        rpcHeader.setStatus((byte) 0x1);
+        rpcHeader.setSerializationType(serializationType);
+        return rpcHeader;
+    }
 }
