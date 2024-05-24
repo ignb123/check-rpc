@@ -47,6 +47,12 @@
             <artifactId>checkrpc-loadbalancer-consistenthash-zk</artifactId>
             <version>${project.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>io.check.rpc</groupId>
+            <artifactId>checkrpc-loadbalancer-least-connections</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
 

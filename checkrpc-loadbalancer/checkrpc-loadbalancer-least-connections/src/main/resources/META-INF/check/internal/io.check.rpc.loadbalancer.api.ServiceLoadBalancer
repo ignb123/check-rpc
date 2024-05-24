@@ -1,0 +1,1 @@
+leastconnections=io.check.rpc.loadbalancer.least.connections.LeastConnectionsServiceLoadBalancer
