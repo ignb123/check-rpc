@@ -17,6 +17,8 @@
     <file url="file://$PROJECT_DIR$/checkrpc-consumer/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/checkrpc-loadbalancer/checkrpc-loadbalancer-api/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/checkrpc-loadbalancer/checkrpc-loadbalancer-api/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/checkrpc-loadbalancer/checkrpc-loadbalancer-consistenthash-zk/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/checkrpc-loadbalancer/checkrpc-loadbalancer-consistenthash-zk/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/checkrpc-loadbalancer/checkrpc-loadbalancer-random-weight/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/checkrpc-loadbalancer/checkrpc-loadbalancer-random-weight/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/checkrpc-loadbalancer/checkrpc-loadbalancer-random/src/main/java" charset="UTF-8" />

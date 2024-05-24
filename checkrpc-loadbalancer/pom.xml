@@ -18,6 +18,7 @@
         <module>checkrpc-loadbalancer-random-weight</module>
         <module>checkrpc-loadbalancer-round-robin-weight</module>
         <module>checkrpc-loadbalancer-sourceip-hash-weight</module>
+        <module>checkrpc-loadbalancer-consistenthash-zk</module>
     </modules>
 
 </project>
