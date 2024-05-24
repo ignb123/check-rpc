@@ -1,6 +1,7 @@
 package io.check.rpc.consumer.common;
 
 import io.check.rpc.common.helper.RpcServiceHelper;
+import io.check.rpc.common.ip.IpUtils;
 import io.check.rpc.common.threadpool.ClientThreadPool;
 import io.check.rpc.consumer.common.handler.RpcConsumerHandler;
 import io.check.rpc.consumer.common.helper.RpcConsumerHandlerHelper;
@@ -31,7 +32,10 @@ public class RpcConsumer implements Consumer {
     private static volatile RpcConsumer instance;
     private static Map<String, RpcConsumerHandler> handlerMap = new ConcurrentHashMap<>();
 
+    private final String localIp;
+
     private RpcConsumer() {
+        localIp = IpUtils.getLocalHostIp();
         bootstrap = new Bootstrap();
         eventLoopGroup = new NioEventLoopGroup(4);
         bootstrap.group(eventLoopGroup).channel(NioSocketChannel.class)
@@ -68,7 +72,7 @@ public class RpcConsumer implements Consumer {
                 .buildServiceKey(request.getClassName(), request.getVersion(), request.getGroup());
         Object[] params = request.getParameters();
         int invokerHashCode = (params == null || params.length == 0) ? serviceKey.hashCode() : params[0].hashCode();
-        ServiceMeta serviceMeta = registryService.discovery(serviceKey, invokerHashCode);
+        ServiceMeta serviceMeta = registryService.discovery(serviceKey, invokerHashCode, localIp);
         if(serviceMeta != null){
             RpcConsumerHandler handler = RpcConsumerHandlerHelper.get(serviceMeta);
             // 缓存中无RpcClientHandler

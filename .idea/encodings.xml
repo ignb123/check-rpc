@@ -23,6 +23,8 @@
     <file url="file://$PROJECT_DIR$/checkrpc-loadbalancer/checkrpc-loadbalancer-random/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/checkrpc-loadbalancer/checkrpc-loadbalancer-round-robin-weight/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/checkrpc-loadbalancer/checkrpc-loadbalancer-round-robin-weight/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/checkrpc-loadbalancer/checkrpc-loadbalancer-sourceip-hash-weight/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/checkrpc-loadbalancer/checkrpc-loadbalancer-sourceip-hash-weight/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/checkrpc-loadbalancer/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/checkrpc-loadbalancer/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/checkrpc-protocol/src/main/java" charset="UTF-8" />

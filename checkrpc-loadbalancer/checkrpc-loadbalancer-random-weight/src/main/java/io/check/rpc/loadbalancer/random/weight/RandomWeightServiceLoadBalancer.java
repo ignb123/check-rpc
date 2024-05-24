@@ -22,7 +22,7 @@ public class RandomWeightServiceLoadBalancer<T> implements ServiceLoadBalancer<T
      * @return 返回从服务器列表中根据加权随机算法选择出的一个服务器实例。如果输入列表为空或null，则返回null。
      */
     @Override
-    public T select(List<T> servers, int hashCode) {
+    public T select(List<T> servers, int hashCode, String sourceIp) {
         logger.info("基于加权随机算法的负载均衡策略...");
         // 检查服务器列表是否为空，防止除零错误和空指针异常
         if (servers == null || servers.isEmpty()){

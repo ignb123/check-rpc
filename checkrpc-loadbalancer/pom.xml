@@ -17,6 +17,7 @@
         <module>checkrpc-loadbalancer-random</module>
         <module>checkrpc-loadbalancer-random-weight</module>
         <module>checkrpc-loadbalancer-round-robin-weight</module>
+        <module>checkrpc-loadbalancer-sourceip-hash-weight</module>
     </modules>
 
 </project>

@@ -36,7 +36,7 @@ public class ZookeeperRegistryTest {
 
     @Test
     public void testDiscovery() throws Exception {
-        System.out.println(this.registryService.discovery(RegistryService.class.getName(), "check".hashCode()));
+        System.out.println(this.registryService.discovery(RegistryService.class.getName(), "check".hashCode(),"111"));
     }
 
     @Test
