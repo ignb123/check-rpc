@@ -104,9 +104,14 @@ public class RpcConstants {
      */
     public static final String SERVICE_LOAD_BALANCER_RANDOM = "random";
 
-    public static void main(String[] args){
-        String str = "test0000000000000000";
-        System.out.println(str.replace("0", ""));
-    }
+
+    /**
+     * 最小权重
+     */
+    public static final int SERVICE_WEIGHT_MIN = 1;
+    /**
+     * 最大权重
+     */
+    public static final int SERVICE_WEIGHT_MAX = 100;
 
 }

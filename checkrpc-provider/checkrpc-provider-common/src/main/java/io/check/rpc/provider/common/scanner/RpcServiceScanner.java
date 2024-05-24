@@ -1,5 +1,6 @@
 package io.check.rpc.provider.common.scanner;
 
+import io.binghe.rpc.constants.RpcConstants;
 import io.check.rpc.annotation.RpcService;
 import io.check.rpc.common.helper.RpcServiceHelper;
 import io.check.rpc.common.scanner.ClassScanner;
@@ -38,7 +39,7 @@ public class RpcServiceScanner extends ClassScanner {
                 if (rpcService != null){
                     // 优先使用interfaceClass, interfaceClass的name为空，再使用interfaceClassName
 
-                    ServiceMeta serviceMeta = new ServiceMeta(geServiceName(rpcService), rpcService.version(), rpcService.group(), host, port);
+                    ServiceMeta serviceMeta = new ServiceMeta(geServiceName(rpcService), rpcService.version(), rpcService.group(), host, port,getWeight(rpcService.weight()));
                     // 将元数据注册到注册中心
                     registryService.register(serviceMeta);
                     // 向handlerMap中记录标注了RpcService注解的类实例
@@ -63,5 +64,15 @@ public class RpcServiceScanner extends ClassScanner {
             serviceName = rpcService.interfaceClassName();
         }
         return serviceName;
+    }
+
+    private static int getWeight(int weight) {
+        if (weight < RpcConstants.SERVICE_WEIGHT_MIN){
+            weight = RpcConstants.SERVICE_WEIGHT_MIN;
+        }
+        if (weight > RpcConstants.SERVICE_WEIGHT_MAX){
+            weight = RpcConstants.SERVICE_WEIGHT_MAX;
+        }
+        return weight;
     }
 }

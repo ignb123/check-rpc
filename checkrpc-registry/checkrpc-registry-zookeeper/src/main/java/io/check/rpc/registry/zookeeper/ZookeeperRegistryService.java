@@ -2,6 +2,7 @@ package io.check.rpc.registry.zookeeper;
 
 import io.check.rpc.common.helper.RpcServiceHelper;
 import io.check.rpc.loadbalancer.api.ServiceLoadBalancer;
+import io.check.rpc.loadbalancer.helper.ServiceLoadBalancerHelper;
 import io.check.rpc.loadbalancer.random.RandomServiceLoadBalancer;
 import io.check.rpc.protocol.meta.ServiceMeta;
 import io.check.rpc.registry.api.RegistryService;
@@ -44,7 +45,7 @@ public class ZookeeperRegistryService implements RegistryService {
     /**
      * 服务负载均衡类实例
      */
-    private ServiceLoadBalancer<ServiceInstance<ServiceMeta>> serviceLoadBalancer;
+    private ServiceLoadBalancer<ServiceMeta> serviceLoadBalancer;
 
     @Override
     public void register(ServiceMeta serviceMeta) throws Exception {
@@ -75,12 +76,10 @@ public class ZookeeperRegistryService implements RegistryService {
     public ServiceMeta discovery(String serviceName, int invokerHashCode, String sourceIp) throws Exception {
         Collection<ServiceInstance<ServiceMeta>> serviceInstances =
                 serviceDiscovery.queryForInstances(serviceName);
-        ServiceInstance<ServiceMeta> instance =
-                serviceLoadBalancer.select((List<ServiceInstance<ServiceMeta>>) serviceInstances, invokerHashCode,sourceIp);
-        if (instance != null) {
-            return instance.getPayload();
-        }
-        return null;
+        return this.serviceLoadBalancer
+                .select(ServiceLoadBalancerHelper
+                        .getServiceMetaList((List<ServiceInstance<ServiceMeta>>) serviceInstances),
+                        invokerHashCode, sourceIp);
     }
 
     @Override
@@ -109,7 +108,7 @@ public class ZookeeperRegistryService implements RegistryService {
                 .build();
 
         this.serviceDiscovery.start(); // 启动服务发现
-        this.serviceLoadBalancer = ExtensionLoader.getExtension(ServiceLoadBalancer.class,
-                registryConfig.getRegistryLoadBalanceType());
+        this.serviceLoadBalancer = ExtensionLoader
+                .getExtension(ServiceLoadBalancer.class, registryConfig.getRegistryLoadBalanceType());
     }
 }

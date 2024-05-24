@@ -12,33 +12,6 @@
     <artifactId>checkrpc-loadbalancer-consistenthash-zk</artifactId>
 
     <dependencies>
-        <dependency>
-            <groupId>org.apache.curator</groupId>
-            <artifactId>curator-framework</artifactId>
-            <version>${curator.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>log4j</groupId>
-                    <artifactId>log4j</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.curator</groupId>
-            <artifactId>curator-recipes</artifactId>
-            <version>${curator.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.curator</groupId>
-            <artifactId>curator-x-discovery</artifactId>
-            <version>${curator.version}</version>
-        </dependency>
-
-<!--        <dependency>-->
-<!--            <groupId>io.check.rpc</groupId>-->
-<!--            <artifactId>checkrpc-registry-api</artifactId>-->
-<!--            <version>${project.version}</version>-->
-<!--        </dependency>-->
 
         <dependency>
             <groupId>io.check.rpc</groupId>
