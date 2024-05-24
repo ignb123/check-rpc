@@ -7,6 +7,7 @@ import io.check.rpc.loadbalancer.random.RandomServiceLoadBalancer;
 import io.check.rpc.protocol.meta.ServiceMeta;
 import io.check.rpc.registry.api.RegistryService;
 import io.check.rpc.registry.api.config.RegistryConfig;
+import io.check.rpc.spi.annotation.SPIClass;
 import io.check.rpc.spi.loader.ExtensionLoader;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
@@ -15,12 +16,17 @@ import org.apache.curator.x.discovery.ServiceDiscovery;
 import org.apache.curator.x.discovery.ServiceDiscoveryBuilder;
 import org.apache.curator.x.discovery.ServiceInstance;
 import org.apache.curator.x.discovery.details.JsonInstanceSerializer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 
+@SPIClass
 public class ZookeeperRegistryService implements RegistryService {
+
+    private final Logger logger = LoggerFactory.getLogger(ZookeeperRegistryService.class);
 
     /**
      * 连接重试的间隔时间
@@ -49,6 +55,7 @@ public class ZookeeperRegistryService implements RegistryService {
 
     @Override
     public void register(ServiceMeta serviceMeta) throws Exception {
+        logger.info("基于ZOOKEEPER的注册中心...");
         ServiceInstance<ServiceMeta> serviceInstance = ServiceInstance
                 .<ServiceMeta>builder()
                 .name(RpcServiceHelper.buildServiceKey(serviceMeta.getServiceName()
@@ -89,7 +96,6 @@ public class ZookeeperRegistryService implements RegistryService {
 
     @Override
     public void init(RegistryConfig registryConfig) throws Exception{
-
 
         // 创建 CuratorFramework 客户端实例，并配置重试策略
         CuratorFramework client = CuratorFrameworkFactory

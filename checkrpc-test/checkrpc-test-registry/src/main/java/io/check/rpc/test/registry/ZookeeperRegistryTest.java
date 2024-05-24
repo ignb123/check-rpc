@@ -4,6 +4,7 @@ import io.check.rpc.protocol.meta.ServiceMeta;
 import io.check.rpc.registry.api.RegistryService;
 import io.check.rpc.registry.api.config.RegistryConfig;
 import io.check.rpc.registry.zookeeper.ZookeeperRegistryService;
+import io.check.rpc.spi.loader.ExtensionLoader;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -18,7 +19,7 @@ public class ZookeeperRegistryTest {
     @Before
     public void init() throws Exception{
         RegistryConfig registryConfig = new RegistryConfig("127.0.0.1:2181", "zookeeper","random");
-        this.registryService = new ZookeeperRegistryService();
+        this.registryService = ExtensionLoader.getExtension(RegistryService.class,"zookeeper");
         this.registryService.init(registryConfig);
         this.serviceMeta = new ServiceMeta(ZookeeperRegistryTest.class.getName(), "1.0.0", "check", "127.0.0.1", 8080,1);
     }

@@ -2,9 +2,11 @@ package io.check.rpc.registry.api;
 
 import io.check.rpc.protocol.meta.ServiceMeta;
 import io.check.rpc.registry.api.config.RegistryConfig;
+import io.check.rpc.spi.annotation.SPI;
 
 import java.io.IOException;
 
+@SPI
 public interface RegistryService {
 
     /** 服务注册

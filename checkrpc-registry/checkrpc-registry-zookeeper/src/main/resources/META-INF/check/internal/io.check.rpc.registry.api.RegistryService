@@ -1,0 +1,1 @@
+zookeeper=io.check.rpc.registry.zookeeper.ZookeeperRegistryService
