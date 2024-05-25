@@ -2,7 +2,9 @@ package io.check.rpc.consumer.common.helper;
 
 import io.check.rpc.consumer.common.handler.RpcConsumerHandler;
 import io.check.rpc.protocol.meta.ServiceMeta;
+import io.netty.channel.Channel;
 
+import java.net.InetSocketAddress;
 import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -35,5 +37,19 @@ public class RpcConsumerHandlerHelper {
             });
         }
         rpcClientHandlers.clear();
+    }
+
+    public static int size() {
+        return rpcConsumerHandlerMap.size();
+    }
+
+    public static void remove(Channel channel) {
+        InetSocketAddress socketAddress = (InetSocketAddress) channel.remoteAddress();
+        String address = socketAddress.getAddress().getHostAddress();
+        int port = socketAddress.getPort();
+        rpcConsumerHandlerMap.remove(generateKey(address, port));
+    }
+    private static String generateKey(String address, int port){
+        return address.concat("_").concat(String.valueOf(port));
     }
 }

@@ -9,7 +9,7 @@ public class RpcSingleServerTest {
         RpcSingleServer singleServer = new RpcSingleServer("127.0.0.1:27880",
                 "127.0.0.1:2181",
                 "zookeeper","zkconsistenthash", "io.check.rpc.test",
-                "javassist");
+                "javassist",30000, 60000);
         singleServer.startNettyServer();
     }
 }

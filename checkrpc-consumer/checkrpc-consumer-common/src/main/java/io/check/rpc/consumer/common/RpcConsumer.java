@@ -44,21 +44,33 @@ public class RpcConsumer implements Consumer {
      */
     private ScheduledExecutorService executorService;
 
-    private RpcConsumer() {
+    //心跳间隔时间，默认30秒
+    private int heartbeatInterval = 30000;
+
+    //扫描并移除空闲连接时间，默认60秒
+    private int scanNotActiveChannelInterval = 60000;
+
+    private RpcConsumer(int heartbeatInterval, int scanNotActiveChannelInterval) {
+        if (heartbeatInterval > 0){
+            this.heartbeatInterval = heartbeatInterval;
+        }
+        if (scanNotActiveChannelInterval > 0){
+            this.scanNotActiveChannelInterval = scanNotActiveChannelInterval;
+        }
         localIp = IpUtils.getLocalHostIp();
         bootstrap = new Bootstrap();
         eventLoopGroup = new NioEventLoopGroup(4);
         bootstrap.group(eventLoopGroup).channel(NioSocketChannel.class)
-                .handler(new RpcConsumerInitializer());
+                .handler(new RpcConsumerInitializer(heartbeatInterval));
         //TODO 启动心跳，后续优化
         this.startHeartbeat();
     }
 
-    public static RpcConsumer getInstance(){
+    public static RpcConsumer getInstance(int heartbeatInterval, int scanNotActiveChannelInterval){
         if(instance == null){
             synchronized (RpcConsumer.class){
                 if(instance == null){
-                    instance = new RpcConsumer();
+                    instance = new RpcConsumer(heartbeatInterval, scanNotActiveChannelInterval);
                 }
             }
         }
@@ -79,14 +91,14 @@ public class RpcConsumer implements Consumer {
         executorService.scheduleAtFixedRate(() -> {
             logger.info("=============scanNotActiveChannel============");
             ConsumerConnectionManager.scanNotActiveChannel();
-        }, 10, 60, TimeUnit.SECONDS);
+        }, 10, scanNotActiveChannelInterval, TimeUnit.MILLISECONDS);
 
         // 定时任务：发送ping消息
         // 3秒后开始第一次发送ping消息，之后每隔30秒发送一次
         executorService.scheduleAtFixedRate(() -> {
             logger.info("=============broadcastPingMessageFromConsumer============");
-            ConsumerConnectionManager.broadcastPingMessageFromConsumer();
-        }, 3, 30, TimeUnit.SECONDS);
+            ConsumerConnectionManager.broadcastPingMessageFromConsumer(this);
+        }, 3, heartbeatInterval, TimeUnit.MILLISECONDS);
     }
 
 
@@ -133,20 +145,26 @@ public class RpcConsumer implements Consumer {
      * 创建连接并返回RpcClientHandler
      */
     private RpcConsumerHandler getRpcConsumerHandler(ServiceMeta serviceMeta) throws InterruptedException{
-        ChannelFuture channelFuture  = bootstrap.connect(serviceMeta.getServiceAddr(), serviceMeta.getServicePort()).sync();
+        return getRpcConsumerHandlerWithAddressAndPort(serviceMeta.getServiceAddr(), serviceMeta.getServicePort());
+    }
+
+    public RpcConsumerHandler getRpcConsumerHandlerWithAddressAndPort(String address, int port) throws InterruptedException {
+        ChannelFuture channelFuture =
+                bootstrap.connect(address, port).sync();
         channelFuture.addListener((ChannelFutureListener) listener -> {
             if (channelFuture.isSuccess()) {
-                logger.info("connect rpc server {} on port {} success.", serviceMeta.getServiceAddr(), serviceMeta.getServicePort());
+                logger.info("connect rpc server {} on port {} success.", address, port);
                 //添加连接信息，在服务消费者端记录每个服务提供者实例的连接次数
+                ServiceMeta serviceMeta = new ServiceMeta();
+                serviceMeta.setServiceAddr(address);
+                serviceMeta.setServicePort(port);
                 ConnectionsContext.add(serviceMeta);
-            }
-            else {
-                logger.error("connect rpc server {} on port {} failed.", serviceMeta.getServiceAddr(), serviceMeta.getServicePort());
+            } else {
+                logger.error("connect rpc server {} on port {} failed.", address, port);
                 channelFuture.cause().printStackTrace();
                 eventLoopGroup.shutdownGracefully();
             }
         });
-        return channelFuture.channel()
-                .pipeline().get(RpcConsumerHandler.class);
+        return channelFuture.channel().pipeline().get(RpcConsumerHandler.class);
     }
 }

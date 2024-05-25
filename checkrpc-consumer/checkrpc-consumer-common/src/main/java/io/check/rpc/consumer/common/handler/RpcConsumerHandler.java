@@ -1,12 +1,15 @@
 package io.check.rpc.consumer.common.handler;
 
 import com.alibaba.fastjson2.JSONObject;
+import io.binghe.rpc.constants.RpcConstants;
 import io.check.rpc.consumer.common.cache.ConsumerChannelCache;
 import io.check.rpc.consumer.common.context.RpcContext;
 
 import io.check.rpc.protocol.RpcProtocol;
+import io.check.rpc.protocol.enumeration.RpcStatus;
 import io.check.rpc.protocol.enumeration.RpcType;
 import io.check.rpc.protocol.header.RpcHeader;
+import io.check.rpc.protocol.header.RpcHeaderFactory;
 import io.check.rpc.protocol.request.RpcRequest;
 import io.check.rpc.protocol.response.RpcResponse;
 import io.check.rpc.proxy.api.future.RPCFuture;
@@ -15,6 +18,7 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.handler.timeout.IdleStateEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -82,6 +86,22 @@ public class RpcConsumerHandler extends SimpleChannelInboundHandler<RpcProtocol<
         ConsumerChannelCache.remove(ctx.channel());
     }
 
+    @Override
+    public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
+        if (evt instanceof IdleStateEvent){
+            //发送一次心跳数据
+            RpcHeader header = RpcHeaderFactory
+                    .getRequestHeader(RpcConstants.SERIALIZATION_PROTOSTUFF, RpcType.HEARTBEAT_FROM_CONSUMER.getType());
+            RpcProtocol<RpcRequest> requestRpcProtocol = new RpcProtocol<RpcRequest>();
+            RpcRequest rpcRequest = new RpcRequest();
+            rpcRequest.setParameters(new Object[]{RpcConstants.HEARTBEAT_PING});
+            requestRpcProtocol.setHeader(header);
+            requestRpcProtocol.setBody(rpcRequest);
+            ctx.writeAndFlush(requestRpcProtocol);
+        }else {
+            super.userEventTriggered(ctx, evt);
+        }
+    }
 
     /**
      * 处理从服务提供者接收到的数据。
@@ -100,14 +120,33 @@ public class RpcConsumerHandler extends SimpleChannelInboundHandler<RpcProtocol<
 
     private void handlerMessage(RpcProtocol<RpcResponse> protocol, Channel channel){
         RpcHeader header = protocol.getHeader();
-        // 心跳消息
+        // 服务提供者响应服务消费者的心跳数据
         if(header.getMsgType() == (byte) RpcType.HEARTBEAT_TO_CONSUMER.getType()){
             this.handlerHeartbeatMessage(protocol,channel);
-        }else if(header.getMsgType() == (byte) RpcType.RESPONSE.getType()){ // 响应消息
+        }else if(header.getMsgType() == (byte) RpcType.HEARTBEAT_FROM_PROVIDER.getType()){ //从服务提供者发起的心跳数据
+            this.handlerHeartbeatMessageFromProvider(protocol,channel);
+        } else if(header.getMsgType() == (byte) RpcType.RESPONSE.getType()){ // 响应消息
             this.handlerResponseMessage(protocol,header);
         }
     }
 
+    /**
+     * 要是接收服务提供者发送过来的心跳ping消息，并响应pong消息
+     * @param protocol
+     * @param channel
+     */
+    private void handlerHeartbeatMessageFromProvider(RpcProtocol<RpcResponse> protocol, Channel channel) {
+        RpcHeader header = protocol.getHeader();
+        header.setMsgType((byte) RpcType.HEARTBEAT_TO_PROVIDER.getType());
+        RpcProtocol<RpcRequest> requestRpcProtocol = new RpcProtocol<RpcRequest>();
+        RpcRequest request = new RpcRequest();
+        request.setParameters(new Object[]{RpcConstants.HEARTBEAT_PONG});
+        header.setStatus((byte) RpcStatus.SUCCESS.getCode());
+        requestRpcProtocol.setHeader(header);
+        requestRpcProtocol.setBody(request);
+        channel.writeAndFlush(requestRpcProtocol);
+//        logger.info("故意不发送pong消息");
+    }
     /**
      * 处理心跳消息，这里由于心跳是服务消费者向服务提供者发起，服务提供者接收到心跳消息后，
      * 会立即进行响应。所以，在服务消费者接收到服务提供者响应的心跳消息后，可不必在任何处理，打印日志即可
@@ -117,6 +156,9 @@ public class RpcConsumerHandler extends SimpleChannelInboundHandler<RpcProtocol<
         //此处简单打印即可,实际场景可不做处理
         logger.info("receive service provider heartbeat message, the provider is: {}, the heartbeat message is: {}",
                 channel.remoteAddress(), protocol.getBody().getResult());
+        // 收到服务提供者pong后，对应channel 等待数归零
+        int count = ConsumerChannelCache.decreaseWaitTimes(channel);
+        logger.info("服务消费者收到服务提供者[{}]心跳响应，当前心跳响应等待[{}]次", channel.remoteAddress(), count);
     }
 
     /**

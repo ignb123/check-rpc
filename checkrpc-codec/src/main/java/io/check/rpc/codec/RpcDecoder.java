@@ -67,8 +67,8 @@ public class RpcDecoder extends ByteToMessageDecoder implements RpcCodec{
                 //TODO 新增CASE
                 //服务消费者发送给服务提供者的心跳数据
             case HEARTBEAT_FROM_CONSUMER:
-                //服务提供者发送给服务消费者的心跳数据
-            case HEARTBEAT_FROM_PROVIDER:
+                //服务消费者发送给服务提供者的响应数据
+            case HEARTBEAT_TO_PROVIDER:
                 RpcRequest request = serialization.deserialize(data, RpcRequest.class);
                 if (request != null) {
                     RpcProtocol<RpcRequest> protocol = new RpcProtocol<>();
@@ -79,10 +79,10 @@ public class RpcDecoder extends ByteToMessageDecoder implements RpcCodec{
                 break;
             case RESPONSE:
                 //TODO 新增case
-                //服务提供者响应服务消费者的心跳数据
+                //服务提供者响应服务消费者的响应数据
             case HEARTBEAT_TO_CONSUMER:
-                //服务消费者响应服务提供者的心跳数据
-            case HEARTBEAT_TO_PROVIDER:
+                //服务提供者发送给服务消费者的心跳数据
+            case HEARTBEAT_FROM_PROVIDER:
                 RpcResponse response = serialization.deserialize(data, RpcResponse.class);
                 if (response != null) {
                     RpcProtocol<RpcResponse> protocol = new RpcProtocol<>();

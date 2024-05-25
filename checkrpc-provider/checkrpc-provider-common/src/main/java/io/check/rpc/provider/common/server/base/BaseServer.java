@@ -1,12 +1,13 @@
-package io.check.rpc.provider.common.server.base.BaseServer;
+package io.check.rpc.provider.common.server.base;
 
+import io.binghe.rpc.constants.RpcConstants;
 import io.check.rpc.codec.RpcDecoder;
 import io.check.rpc.codec.RpcEncoder;
 import io.check.rpc.provider.common.handler.RpcProviderHandler;
+import io.check.rpc.provider.common.manager.ProviderConnectionManager;
 import io.check.rpc.provider.common.server.api.Server.Server;
 import io.check.rpc.registry.api.RegistryService;
 import io.check.rpc.registry.api.config.RegistryConfig;
-import io.check.rpc.registry.zookeeper.ZookeeperRegistryService;
 import io.check.rpc.spi.loader.ExtensionLoader;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
@@ -16,12 +17,16 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.timeout.IdleStateHandler;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class BaseServer implements Server {
     private final Logger logger = LoggerFactory.getLogger(BaseServer.class);
@@ -47,7 +52,24 @@ public class BaseServer implements Server {
      */
     private String reflectType;
 
-    public BaseServer(String serverAddress, String registryAddress, String registryType, String registryLoadBalanceType, String reflectType){
+    /**
+     * 心跳定时任务线程池
+     */
+    private ScheduledExecutorService executorService;
+
+    //心跳间隔时间，默认30秒
+    private int heartbeatInterval = 3000;
+
+    //扫描并移除空闲连接时间，默认60秒
+    private int scanNotActiveChannelInterval = 6000;
+
+    public BaseServer(String serverAddress, String registryAddress, String registryType, String registryLoadBalanceType, String reflectType, int heartbeatInterval, int scanNotActiveChannelInterval){
+        if (heartbeatInterval > 0){
+            this.heartbeatInterval = heartbeatInterval;
+        }
+        if (scanNotActiveChannelInterval > 0){
+            this.scanNotActiveChannelInterval = scanNotActiveChannelInterval;
+        }
         if(!StringUtils.isEmpty(serverAddress)){
             String[] serverArray = serverAddress.split(":");
             this.host = serverArray[0];
@@ -56,6 +78,21 @@ public class BaseServer implements Server {
 
         this.reflectType = reflectType;
         this.registryService = this.getRegistryService(registryAddress,registryType,registryLoadBalanceType);
+    }
+
+    private void startHeartbeat() {
+        executorService = Executors.newScheduledThreadPool(2);
+        // 扫描并处理所有不活跃的连接
+        executorService.scheduleAtFixedRate(() -> {
+            logger.info("=============scanNotActiveChannel============");
+            ProviderConnectionManager.scanNotActiveChannel();
+        },10, scanNotActiveChannelInterval, TimeUnit.MILLISECONDS);
+
+        // 发送ping消息
+        executorService.scheduleAtFixedRate(()->{
+            logger.info("=============broadcastPingMessageFromConsumer============");
+            ProviderConnectionManager.broadcastPingMessageFromConsumer();
+        }, 3, heartbeatInterval, TimeUnit.MILLISECONDS);
     }
 
     private RegistryService getRegistryService(String registryAddress, String registryType, String registryLoadBalanceType) {
@@ -72,6 +109,8 @@ public class BaseServer implements Server {
 
     @Override
     public void startNettyServer() {
+        // 启用心跳检测
+        this.startHeartbeat();
         // 创建用于接受进来的连接的EventLoopGroup
         EventLoopGroup bossGroup = new NioEventLoopGroup();
         // 创建用于处理连接的EventLoopGroup
@@ -88,9 +127,19 @@ public class BaseServer implements Server {
                         protected void initChannel(SocketChannel channel) throws Exception {
                             // 配置ChannelPipeline，添加编解码器和自定义处理器
                             channel.pipeline()
-                                    .addLast(new RpcDecoder())
-                                    .addLast(new RpcEncoder())
-                                    .addLast(new RpcProviderHandler(handlerMap,reflectType));
+                                    .addLast(RpcConstants.CODEC_DECODER,new RpcDecoder())
+                                    .addLast(RpcConstants.CODEC_ENCODER,new RpcEncoder())
+                                    /**
+                                     * 在Netty的服务端ChannelPipeline中添加一个空闲状态处理器（IdleStateHandler）。
+                                     * 该处理器用于处理连接的空闲状态，以支持心跳机制。
+                                     * @param new IdleStateHandler(0, 0, heartbeatInterval, TimeUnit.MILLISECONDS) 创建一个IdleStateHandler实例，
+                                     *        其中不检测读或写活动的超时（即只检测连接的空闲时间），空闲时间由heartbeatInterval指定，
+                                     *        单位为毫秒。这是实现心跳机制的一种方式，确保连接在指定的时间间隔内有活动，
+                                     *        如果没有活动则可能触发连接断开或其他预定义的处理逻辑。
+                                     */
+                                    .addLast(RpcConstants.CODEC_SERVER_IDLE_HANDLER,
+                                            new IdleStateHandler(0, 0, heartbeatInterval, TimeUnit.MILLISECONDS))
+                                    .addLast(RpcConstants.CODEC_HANDLER,new RpcProviderHandler(handlerMap,reflectType));
                         }
                     })
                     // 配置服务器端连接队列大小
@@ -110,6 +159,7 @@ public class BaseServer implements Server {
             // 优雅关闭EventLoopGroup
             workerGroup.shutdownGracefully();
             bossGroup.shutdownGracefully();
+            executorService.shutdown();
         }
 
     }
