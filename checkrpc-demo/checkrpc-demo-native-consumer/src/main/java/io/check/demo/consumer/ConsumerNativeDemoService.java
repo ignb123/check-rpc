@@ -21,7 +21,8 @@ public class ConsumerNativeDemoService {
         rpcClient = new RpcClient("127.0.0.1:2181", "zookeeper",
                 "leastconnections","cglib",
                 "1.0.0", "check", "protostuff",
-                3000, false, false,3000, 6000);
+                3000, false, false,30000, 60000,
+                1000, 3);
     }
 
 

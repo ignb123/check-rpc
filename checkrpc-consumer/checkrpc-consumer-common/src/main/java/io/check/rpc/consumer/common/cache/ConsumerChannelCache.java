@@ -34,8 +34,13 @@ public class ConsumerChannelCache {
     }
 
     public static void remove(Channel channel){
-        channelCache.remove(channel);
-        waitingPongTimesMap.remove(getKey(channel));
+        if (channel == null) {
+            logger.error("传入的channel参数为null，无法移除");
+            return;
+        }else{
+            channelCache.remove(channel);
+            waitingPongTimesMap.remove(getKey(channel));
+        }
     }
 
     public static Set<Channel> getChannelCache(){

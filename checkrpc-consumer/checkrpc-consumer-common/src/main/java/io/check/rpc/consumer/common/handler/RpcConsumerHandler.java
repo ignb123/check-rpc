@@ -77,7 +77,9 @@ public class RpcConsumerHandler extends SimpleChannelInboundHandler<RpcProtocol<
     @Override
     public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
         super.channelUnregistered(ctx);
-        ConsumerChannelCache.remove(ctx.channel());
+        if(ctx.channel() != null){
+            ConsumerChannelCache.remove(ctx.channel());
+        }
     }
 
     @Override
