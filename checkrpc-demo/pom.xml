@@ -15,6 +15,10 @@
         <module>checkrpc-demo-api</module>
         <module>checkrpc-demo-native-consumer</module>
         <module>checkrpc-demo-native-provider</module>
+        <module>checkrpc-demo-spring-xml-provider</module>
+        <module>checkrpc-demo-spring-annotation-provider</module>
+        <module>checkrpc-demo-spring-xml-consumer</module>
+        <module>checkrpc-demo-spring-annotation-consumer</module>
     </modules>
 
     <properties>

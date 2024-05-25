@@ -1,4 +1,4 @@
-package io.binghe.rpc.constants;
+package io.check.rpc.constants;
 
 /**
  * @author check

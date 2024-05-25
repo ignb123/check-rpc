@@ -1,6 +1,6 @@
 package io.check.rpc.consumer.common.initializer;
 
-import io.binghe.rpc.constants.RpcConstants;
+import io.check.rpc.constants.RpcConstants;
 import io.check.rpc.codec.RpcDecoder;
 import io.check.rpc.codec.RpcEncoder;
 import io.check.rpc.consumer.common.handler.RpcConsumerHandler;

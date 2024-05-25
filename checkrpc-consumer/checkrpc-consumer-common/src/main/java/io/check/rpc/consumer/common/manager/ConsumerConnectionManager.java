@@ -1,6 +1,6 @@
 package io.check.rpc.consumer.common.manager;
 
-import io.binghe.rpc.constants.RpcConstants;
+import io.check.rpc.constants.RpcConstants;
 import io.check.rpc.consumer.common.RpcConsumer;
 import io.check.rpc.consumer.common.cache.ConsumerChannelCache;
 import io.check.rpc.consumer.common.handler.RpcConsumerHandler;

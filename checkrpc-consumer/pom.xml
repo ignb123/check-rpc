@@ -14,6 +14,7 @@
     <modules>
         <module>checkrpc-consumer-common</module>
         <module>checkrpc-consumer-native</module>
+        <module>checkrpc-consumer-spring</module>
     </modules>
 
 

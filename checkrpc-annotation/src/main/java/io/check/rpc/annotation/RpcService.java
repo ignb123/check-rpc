@@ -38,4 +38,16 @@ public @interface RpcService {
      * 服务权重
      */
     int weight() default 0;
+
+
+    /**
+     * 心跳间隔时间，默认30秒
+     */
+    int heartbeatInterval() default 30000;
+
+    /**
+     * 扫描空闲连接间隔时间，默认60秒
+     */
+    int scanNotActiveChannelInterval() default 60000;
+
 }

@@ -1,11 +1,10 @@
 package io.check.rpc.provider.common.manager;
 
-import io.binghe.rpc.constants.RpcConstants;
+import io.check.rpc.constants.RpcConstants;
 import io.check.rpc.protocol.RpcProtocol;
 import io.check.rpc.protocol.enumeration.RpcType;
 import io.check.rpc.protocol.header.RpcHeader;
 import io.check.rpc.protocol.header.RpcHeaderFactory;
-import io.check.rpc.protocol.request.RpcRequest;
 import io.check.rpc.protocol.response.RpcResponse;
 import io.check.rpc.provider.common.cache.ProviderChannelCache;
 import io.netty.channel.Channel;

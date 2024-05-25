@@ -1,12 +1,11 @@
 package io.check.rpc.consumer.common.cache;
 
-import io.binghe.rpc.constants.RpcConstants;
+import io.check.rpc.constants.RpcConstants;
 import io.netty.channel.Channel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
-import java.net.SocketAddress;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;

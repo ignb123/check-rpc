@@ -1,6 +1,6 @@
 package io.check.rpc.provider.common.handler;
 
-import io.binghe.rpc.constants.RpcConstants;
+import io.check.rpc.constants.RpcConstants;
 import io.check.rpc.common.helper.RpcServiceHelper;
 import io.check.rpc.common.threadpool.ServerThreadPool;
 import io.check.rpc.protocol.RpcProtocol;

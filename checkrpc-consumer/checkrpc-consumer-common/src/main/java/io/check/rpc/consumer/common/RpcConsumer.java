@@ -1,6 +1,6 @@
 package io.check.rpc.consumer.common;
 
-import io.binghe.rpc.constants.RpcConstants;
+import io.check.rpc.constants.RpcConstants;
 import io.check.rpc.common.helper.RpcServiceHelper;
 import io.check.rpc.common.ip.IpUtils;
 import io.check.rpc.common.threadpool.ClientThreadPool;

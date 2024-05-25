@@ -19,7 +19,7 @@ public class ConsumerNativeDemoService {
     @Before
     public void initRpcClient(){
         rpcClient = new RpcClient("127.0.0.1:2181", "zookeeper",
-                "leastconnections","cglib",
+                "zkconsistenthash","cglib",
                 "1.0.0", "check", "protostuff",
                 3000, false, false,30000, 60000,
                 1000, 3);

@@ -1,6 +1,6 @@
 package io.check.rpc.provider.common.server.base;
 
-import io.binghe.rpc.constants.RpcConstants;
+import io.check.rpc.constants.RpcConstants;
 import io.check.rpc.codec.RpcDecoder;
 import io.check.rpc.codec.RpcEncoder;
 import io.check.rpc.provider.common.handler.RpcProviderHandler;

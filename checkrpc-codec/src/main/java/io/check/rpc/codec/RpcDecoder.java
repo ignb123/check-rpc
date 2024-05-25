@@ -1,6 +1,6 @@
 package io.check.rpc.codec;
 
-import io.binghe.rpc.constants.RpcConstants;
+import io.check.rpc.constants.RpcConstants;
 import io.check.rpc.common.utils.SerializationUtils;
 import io.check.rpc.protocol.RpcProtocol;
 import io.check.rpc.protocol.enumeration.RpcType;

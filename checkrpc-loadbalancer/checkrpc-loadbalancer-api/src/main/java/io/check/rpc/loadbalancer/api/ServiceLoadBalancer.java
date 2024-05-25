@@ -1,6 +1,6 @@
 package io.check.rpc.loadbalancer.api;
 
-import io.binghe.rpc.constants.RpcConstants;
+import io.check.rpc.constants.RpcConstants;
 import io.check.rpc.spi.annotation.SPI;
 
 import java.util.List;
