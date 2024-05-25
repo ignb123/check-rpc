@@ -24,6 +24,7 @@
         <module>checkrpc-spi</module>
         <module>checkrpc-reflect</module>
         <module>checkrpc-demo</module>
+        <module>checkrpc-spring-boot-starter</module>
     </modules>
 
     <properties>
@@ -59,13 +60,6 @@
             <artifactId>slf4j-log4j12</artifactId>
             <version>${slf4j.version}</version>
         </dependency>
-
-        <dependency>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-            <version>${common.logging}</version>
-        </dependency>
-
 
         <!-- Spring -->
         <dependency>

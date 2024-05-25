@@ -19,6 +19,8 @@
         <module>checkrpc-demo-spring-annotation-provider</module>
         <module>checkrpc-demo-spring-xml-consumer</module>
         <module>checkrpc-demo-spring-annotation-consumer</module>
+        <module>checkrpc-demo-spring-boot-provider</module>
+        <module>checkrpc-demo-spring-boot-consumer</module>
     </modules>
 
     <properties>

@@ -18,5 +18,12 @@ public class SpringAnnotationConsumerTest {
         ConsumerDemoService consumerDemoService = context.getBean(ConsumerDemoService.class);
         String result = consumerDemoService.hello("check");
         logger.info("返回的结果数据===>>> " + result);
+        while (true){
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 }

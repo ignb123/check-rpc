@@ -29,6 +29,10 @@
     <file url="file://$PROJECT_DIR$/checkrpc-demo/checkrpc-demo-spring-annotation-consumer/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/checkrpc-demo/checkrpc-demo-spring-annotation-provider/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/checkrpc-demo/checkrpc-demo-spring-annotation-provider/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/checkrpc-demo/checkrpc-demo-spring-boot-consumer/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/checkrpc-demo/checkrpc-demo-spring-boot-consumer/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/checkrpc-demo/checkrpc-demo-spring-boot-provider/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/checkrpc-demo/checkrpc-demo-spring-boot-provider/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/checkrpc-demo/checkrpc-demo-spring-xml-consumer/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/checkrpc-demo/checkrpc-demo-spring-xml-consumer/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/checkrpc-demo/checkrpc-demo-spring-xml-provider/src/main/java" charset="UTF-8" />
@@ -105,6 +109,12 @@
     <file url="file://$PROJECT_DIR$/checkrpc-serialization/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/checkrpc-spi/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/checkrpc-spi/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/checkrpc-spring-boot-starter/checkrpc-spring-boot-starter-consumer/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/checkrpc-spring-boot-starter/checkrpc-spring-boot-starter-consumer/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/checkrpc-spring-boot-starter/checkrpc-spring-boot-starter-provider/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/checkrpc-spring-boot-starter/checkrpc-spring-boot-starter-provider/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/checkrpc-spring-boot-starter/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/checkrpc-spring-boot-starter/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/checkrpc-test/checkrpc-test-api/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/checkrpc-test/checkrpc-test-api/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/checkrpc-test/checkrpc-test-consumer/checkrpc-test-consumer-codec/src/main/java" charset="UTF-8" />
