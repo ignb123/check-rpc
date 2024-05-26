@@ -20,8 +20,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.IntStream;
 
 @SPIClass
 public class ZookeeperRegistryService implements RegistryService {
@@ -121,5 +123,48 @@ public class ZookeeperRegistryService implements RegistryService {
     @Override
     public ServiceMeta select(List<ServiceMeta> serviceMetaList, int invokerHashCode, String sourceIp) {
         return this.serviceLoadBalancer.select(serviceMetaList, invokerHashCode, sourceIp);
+    }
+
+    /**
+     * 能够通过服务发现机制查询并获取所有服务的元数据信息。
+     *
+     * @return 返回一个包含所有服务元数据的列表。如果查询不到任何服务，则返回空列表。
+     * @throws Exception 如果查询过程中发生任何异常，则抛出。
+     */
+    @Override
+    public List<ServiceMeta> discoveryAll() throws Exception {
+        List<ServiceMeta> serviceMetaList = new ArrayList<>();
+        // 查询所有服务名称
+        Collection<String> names = serviceDiscovery.queryForNames();
+        // 如果服务名称为空或不存在，则直接返回空的服务元数据列表
+        if (names == null || names.isEmpty()) return serviceMetaList;
+        // 遍历每个服务名称，查询其实例信息
+        for (String name : names){
+            // 根据服务名称查询服务实例
+            Collection<ServiceInstance<ServiceMeta>> serviceInstances = serviceDiscovery.queryForInstances(name);
+            // 从服务实例中提取服务元数据
+            List<ServiceMeta> list = this.getServiceMetaFromServiceInstance((List<ServiceInstance<ServiceMeta>>) serviceInstances);
+            // 将提取到的服务元数据添加到总列表中
+            serviceMetaList.addAll(list);
+        }
+        return serviceMetaList;
+    }
+
+    /**
+     * 从给定的服务实例列表中提取服务的元数据。
+     *
+     * @param serviceInstances 服务实例的列表。
+     * @return 返回一个包含从服务实例中提取到的服务元数据的列表。如果输入列表为空，则返回空列表。
+     */
+    private List<ServiceMeta> getServiceMetaFromServiceInstance(List<ServiceInstance<ServiceMeta>> serviceInstances){
+        List<ServiceMeta> list = new ArrayList<>();
+        // 如果服务实例列表为空或不存在，则直接返回空的服务元数据列表
+        if (serviceInstances == null || serviceInstances.isEmpty()) return list;
+        // 遍历每个服务实例，提取并添加其元数据到列表中
+        IntStream.range(0, serviceInstances.size()).forEach((i)->{
+            ServiceInstance<ServiceMeta> serviceInstance = serviceInstances.get(i);
+            list.add(serviceInstance.getPayload());
+        });
+        return list;
     }
 }

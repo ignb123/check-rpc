@@ -46,4 +46,6 @@ public interface RegistryService {
     }
 
     ServiceMeta select(List<ServiceMeta> serviceMetaList, int invokerHashCode, String sourceIp);
+
+    List<ServiceMeta> discoveryAll() throws Exception;
 }

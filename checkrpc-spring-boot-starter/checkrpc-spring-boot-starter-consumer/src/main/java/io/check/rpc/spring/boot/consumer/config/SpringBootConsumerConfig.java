@@ -76,6 +76,9 @@ public final class SpringBootConsumerConfig {
 
     private String directServerUrl;
 
+    //是否开启延迟连接
+    private boolean enableDelayConnection;
+
     public SpringBootConsumerConfig() {
     }
 
@@ -84,7 +87,7 @@ public final class SpringBootConsumerConfig {
                                     final int timeout, final boolean async, final boolean oneway, final int heartbeatInterval,
                                     final int scanNotActiveChannelInterval, final int retryInterval, final int retryTimes,
                                     final boolean enableResultCache, final int resultCacheExpire,
-                                    boolean enableDirectServer, String directServerUrl) {
+                                    boolean enableDirectServer, String directServerUrl, boolean enableDelayConnection) {
         this.registryAddress = registryAddress;
         this.registryType = registryType;
         this.loadBalanceType = loadBalanceType;
@@ -105,6 +108,7 @@ public final class SpringBootConsumerConfig {
         this.resultCacheExpire = resultCacheExpire;
         this.enableDirectServer = enableDirectServer;
         this.directServerUrl = directServerUrl;
+        this.enableDelayConnection = enableDelayConnection;
     }
 
     public String getRegistryAddress() {
@@ -249,5 +253,13 @@ public final class SpringBootConsumerConfig {
 
     public void setDirectServerUrl(String directServerUrl) {
         this.directServerUrl = directServerUrl;
+    }
+
+    public boolean isEnableDelayConnection() {
+        return enableDelayConnection;
+    }
+
+    public void setEnableDelayConnection(boolean enableDelayConnection) {
+        this.enableDelayConnection = enableDelayConnection;
     }
 }

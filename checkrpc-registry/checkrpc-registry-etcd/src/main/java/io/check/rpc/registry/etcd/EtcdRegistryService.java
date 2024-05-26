@@ -12,12 +12,16 @@ import io.check.rpc.registry.api.config.RegistryConfig;
 import io.check.rpc.spi.annotation.SPIClass;
 
 import io.netty.util.CharsetUtil;
+import org.apache.curator.x.discovery.ServiceInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @SPIClass
 public class EtcdRegistryService implements RegistryService {
@@ -80,4 +84,16 @@ public class EtcdRegistryService implements RegistryService {
     public ServiceMeta select(List<ServiceMeta> serviceMetaList, int invokerHashCode, String sourceIp) {
         return this.serviceLoadBalancer.select(serviceMetaList, invokerHashCode, sourceIp);
     }
+
+    /**
+     * 能够通过服务发现机制查询并获取所有服务的元数据信息。
+     *
+     * @return 返回一个包含所有服务元数据的列表。如果查询不到任何服务，则返回空列表。
+     * @throws Exception 如果查询过程中发生任何异常，则抛出。
+     */
+    @Override
+    public List<ServiceMeta> discoveryAll() throws Exception {
+        return null;
+    }
+
 }
