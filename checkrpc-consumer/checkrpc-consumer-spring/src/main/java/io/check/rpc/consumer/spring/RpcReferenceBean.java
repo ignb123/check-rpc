@@ -93,6 +93,10 @@ public class RpcReferenceBean implements FactoryBean<Object> {
      */
     private int resultCacheExpire;
 
+    private boolean enableDirectServer;
+
+    private String directServerUrl;
+
     @Override
     public Object getObject() throws Exception {
         return object;
@@ -107,7 +111,7 @@ public class RpcReferenceBean implements FactoryBean<Object> {
     public void init(){
         rpcClient = new RpcClient(registryAddress, registryType, loadBalanceType, proxy, version, group,
                 serializationType, timeout, async, oneway, heartbeatInterval, scanNotActiveChannelInterval,
-                retryInterval, retryTimes, enableResultCache, resultCacheExpire);
+                retryInterval, retryTimes, enableResultCache, resultCacheExpire,enableDirectServer, directServerUrl);
         this.object = rpcClient.create(interfaceClass);
     }
 
@@ -257,5 +261,21 @@ public class RpcReferenceBean implements FactoryBean<Object> {
 
     public void setResultCacheExpire(int resultCacheExpire) {
         this.resultCacheExpire = resultCacheExpire;
+    }
+
+    public boolean isEnableDirectServer() {
+        return enableDirectServer;
+    }
+
+    public void setEnableDirectServer(boolean enableDirectServer) {
+        this.enableDirectServer = enableDirectServer;
+    }
+
+    public String getDirectServerUrl() {
+        return directServerUrl;
+    }
+
+    public void setDirectServerUrl(String directServerUrl) {
+        this.directServerUrl = directServerUrl;
     }
 }

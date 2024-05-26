@@ -115,6 +115,8 @@ public class RpcConsumerPostProcessor implements ApplicationContextAware, BeanCl
             builder.addPropertyValue("retryTimes", annotation.retryTimes());
             builder.addPropertyValue("enableResultCache", annotation.enableResultCache());
             builder.addPropertyValue("resultCacheExpire", annotation.resultCacheExpire());
+            builder.addPropertyValue("enableDirectServer", annotation.enableDirectServer());
+            builder.addPropertyValue("directServerUrl", annotation.directServerUrl());
 
             // 获取构建完成的BeanDefinition
             BeanDefinition beanDefinition = builder.getBeanDefinition();

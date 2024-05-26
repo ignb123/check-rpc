@@ -68,14 +68,31 @@ public class RpcClient {
     //重试次数
     private int retryTimes = 3;
 
+    /**
+     * 是否开启结果缓存
+     */
     private boolean enableResultCache;
 
+    /**
+     * 缓存结果的时长，单位是毫秒
+     */
     private int resultCacheExpire;
+
+    /**
+     * 是否开启直连服务
+     */
+    private boolean enableDirectServer;
+
+    /**
+     * 直连服务的地址
+     */
+    private String directServerUrl;
 
     public RpcClient(String registryAddress, String registryType, String registryLoadBalanceType, String proxy,
                      String serviceVersion, String serviceGroup, String serializationType, long timeout, boolean async,
                      boolean oneway,int heartbeatInterval, int scanNotActiveChannelInterval,
-                     int retryInterval, int retryTimes, boolean enableResultCache, int resultCacheExpire) {
+                     int retryInterval, int retryTimes, boolean enableResultCache, int resultCacheExpire,
+                     boolean enableDirectServer, String directServerUrl) {
         this.retryInterval = retryInterval;
         this.retryTimes = retryTimes;
         this.serviceVersion = serviceVersion;
@@ -90,6 +107,8 @@ public class RpcClient {
         this.scanNotActiveChannelInterval = scanNotActiveChannelInterval;
         this.enableResultCache = enableResultCache;
         this.resultCacheExpire = resultCacheExpire;
+        this.enableDirectServer = enableDirectServer;
+        this.directServerUrl = directServerUrl;
     }
 
     private RegistryService getRegistryService(String registryAddress, String registryType, String registryLoadBalanceType) {
@@ -110,16 +129,29 @@ public class RpcClient {
     public <T> T create(Class<T> interfaceClass) {
         ProxyFactory proxyFactory = ExtensionLoader.getExtension(ProxyFactory.class, proxy);
         proxyFactory.init(new ProxyConfig(interfaceClass, serviceVersion, serviceGroup, timeout,
-                RpcConsumer.getInstance(heartbeatInterval, scanNotActiveChannelInterval, retryInterval, retryTimes),
+                RpcConsumer.getInstance()
+                        .setHeartbeatInterval(heartbeatInterval)
+                        .setRetryInterval(retryInterval)
+                        .setDirectServerUrl(directServerUrl)
+                        .setEnableDirectServer(enableDirectServer)
+                        .setRetryTimes(retryTimes)
+                        .setScanNotActiveChannelInterval(scanNotActiveChannelInterval),
                 serializationType, async, oneway, registryService, enableResultCache, resultCacheExpire));
         return proxyFactory.getProxy(interfaceClass);
     }
 
     public <T> IAsyncObjectProxy createAsync(Class<T> interfaceClass) {
         return new ObjectProxy<T>(interfaceClass, serviceVersion, serviceGroup, serializationType, timeout,
-                RpcConsumer.getInstance(heartbeatInterval, scanNotActiveChannelInterval, retryInterval, retryTimes),
+                RpcConsumer.getInstance()
+                        .setHeartbeatInterval(heartbeatInterval)
+                        .setRetryInterval(retryInterval)
+                        .setDirectServerUrl(directServerUrl)
+                        .setEnableDirectServer(enableDirectServer)
+                        .setRetryTimes(retryTimes)
+                        .setScanNotActiveChannelInterval(scanNotActiveChannelInterval)
+                ,
                 async, oneway, registryService,enableResultCache, resultCacheExpire);    }
     public void shutdown() {
-        RpcConsumer.getInstance(heartbeatInterval, scanNotActiveChannelInterval, retryInterval, retryTimes).close();
+        RpcConsumer.getInstance().close();
     }
 }

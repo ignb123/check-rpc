@@ -22,7 +22,8 @@ public class ConsumerNativeDemoService {
                 "zkconsistenthash","cglib",
                 "1.0.0", "check", "protostuff",
                 3000, false, false,30000, 60000,
-                1000, 3, true, 10000);
+                1000, 3, false, 10000,
+                true,"127.0.0.1:27880,127.0.0.1:27880,127.0.0.1:27880");
     }
 
 

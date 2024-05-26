@@ -5,6 +5,7 @@ import io.check.rpc.registry.api.config.RegistryConfig;
 import io.check.rpc.spi.annotation.SPI;
 
 import java.io.IOException;
+import java.util.List;
 
 @SPI
 public interface RegistryService {
@@ -43,4 +44,6 @@ public interface RegistryService {
     default void init(RegistryConfig registryConfig) throws Exception {
 
     }
+
+    ServiceMeta select(List<ServiceMeta> serviceMetaList, int invokerHashCode, String sourceIp);
 }

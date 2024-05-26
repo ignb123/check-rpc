@@ -20,7 +20,7 @@ public class RpcConsumerHandlerTest {
 
     private final static Logger logger = LoggerFactory.getLogger(RpcConsumerHandlerTest.class);
     public static void main(String[] args) throws Exception {
-        RpcConsumer consumer = RpcConsumer.getInstance(3000,6000,3000,3);
+        RpcConsumer consumer = RpcConsumer.getInstance();
         RPCFuture future = consumer.sendRequest(getRpcRequestProtocol(),getRegistryService("127.0.0.1:2181", "zookeeper","random"));
         future.addCallback(new AsyncRPCCallback() {
             @Override

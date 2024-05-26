@@ -75,4 +75,9 @@ public class EtcdRegistryService implements RegistryService {
         this.serviceLoadBalancer = ExtensionLoader
                 .getExtension(ServiceLoadBalancer.class, registryConfig.getRegistryLoadBalanceType());
     }
+
+    @Override
+    public ServiceMeta select(List<ServiceMeta> serviceMetaList, int invokerHashCode, String sourceIp) {
+        return this.serviceLoadBalancer.select(serviceMetaList, invokerHashCode, sourceIp);
+    }
 }
