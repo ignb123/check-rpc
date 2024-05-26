@@ -24,9 +24,8 @@ public class ConsumerNativeDemoService {
                 3000, false, false,30000, 60000,
                 1000, 3, false, 10000,
                 true,"127.0.0.1:27880,127.0.0.1:27880,127.0.0.1:27880",
-                false, 16, 16);
+                false, 16, 16,"print");
     }
-
 
     @Test
     public void testInterfaceRpc() throws InterruptedException {

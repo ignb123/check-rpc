@@ -2,6 +2,7 @@ package io.check.rpc.codec;
 
 import io.check.rpc.constants.RpcConstants;
 import io.check.rpc.common.utils.SerializationUtils;
+import io.check.rpc.flow.processor.FlowPostProcessor;
 import io.check.rpc.protocol.RpcProtocol;
 import io.check.rpc.protocol.enumeration.RpcType;
 import io.check.rpc.protocol.header.RpcHeader;
@@ -16,6 +17,13 @@ import io.netty.util.CharsetUtil;
 import java.util.List;
 
 public class RpcDecoder extends ByteToMessageDecoder implements RpcCodec{
+
+    private FlowPostProcessor postProcessor;
+
+    public RpcDecoder(FlowPostProcessor postProcessor){
+        this.postProcessor = postProcessor;
+    }
+
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
 
@@ -64,7 +72,6 @@ public class RpcDecoder extends ByteToMessageDecoder implements RpcCodec{
         Serialization serialization = getJdkSerialization(serializationType);
         switch (msgTypeEnum){
             case REQUEST:
-                //TODO 新增CASE
                 //服务消费者发送给服务提供者的心跳数据
             case HEARTBEAT_FROM_CONSUMER:
                 //服务消费者发送给服务提供者的响应数据
@@ -78,7 +85,6 @@ public class RpcDecoder extends ByteToMessageDecoder implements RpcCodec{
                 }
                 break;
             case RESPONSE:
-                //TODO 新增case
                 //服务提供者响应服务消费者的响应数据
             case HEARTBEAT_TO_CONSUMER:
                 //服务提供者发送给服务消费者的心跳数据
@@ -92,5 +98,7 @@ public class RpcDecoder extends ByteToMessageDecoder implements RpcCodec{
                 }
                 break;
         }
+        //异步调用流控分析后置处理器
+        this.postFlowProcessor(postProcessor, header);
     }
 }

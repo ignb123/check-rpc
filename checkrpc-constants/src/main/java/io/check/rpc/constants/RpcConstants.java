@@ -271,5 +271,9 @@ public class RpcConstants {
      */
     public static final int DEFAULT_QUEUE_CAPACITY = 65536;
 
+    /**
+     * 打印流量
+     */
+    public static final String FLOW_POST_PROCESSOR_PRINT = "print";
 
 }

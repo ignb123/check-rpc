@@ -3,6 +3,7 @@ package io.check.rpc.provider.common.server.base;
 import io.check.rpc.constants.RpcConstants;
 import io.check.rpc.codec.RpcDecoder;
 import io.check.rpc.codec.RpcEncoder;
+import io.check.rpc.flow.processor.FlowPostProcessor;
 import io.check.rpc.provider.common.handler.RpcProviderHandler;
 import io.check.rpc.provider.common.manager.ProviderConnectionManager;
 import io.check.rpc.provider.common.server.api.Server.Server;
@@ -75,10 +76,14 @@ public class BaseServer implements Server {
     //最大线程数
     private int maximumPoolSize;
 
+    //流控分析后置处理器
+    private FlowPostProcessor flowPostProcessor;
+
     public BaseServer(String serverAddress, String registryAddress, String registryType,
                       String registryLoadBalanceType, String reflectType,
                       int heartbeatInterval, int scanNotActiveChannelInterval,
-                      boolean enableResultCache, int resultCacheExpire, int corePoolSize, int maximumPoolSize){
+                      boolean enableResultCache, int resultCacheExpire, int corePoolSize,
+                      int maximumPoolSize, String flowType){
         if (heartbeatInterval > 0){
             this.heartbeatInterval = heartbeatInterval;
         }
@@ -100,6 +105,7 @@ public class BaseServer implements Server {
         this.enableResultCache = enableResultCache;
         this.corePoolSize = corePoolSize;
         this.maximumPoolSize = maximumPoolSize;
+        this.flowPostProcessor = ExtensionLoader.getExtension(FlowPostProcessor.class, flowType);
     }
 
     private void startHeartbeat() {
@@ -149,8 +155,8 @@ public class BaseServer implements Server {
                         protected void initChannel(SocketChannel channel) throws Exception {
                             // 配置ChannelPipeline，添加编解码器和自定义处理器
                             channel.pipeline()
-                                    .addLast(RpcConstants.CODEC_DECODER,new RpcDecoder())
-                                    .addLast(RpcConstants.CODEC_ENCODER,new RpcEncoder())
+                                    .addLast(RpcConstants.CODEC_DECODER,new RpcDecoder(flowPostProcessor))
+                                    .addLast(RpcConstants.CODEC_ENCODER,new RpcEncoder(flowPostProcessor))
                                     /**
                                      * 在Netty的服务端ChannelPipeline中添加一个空闲状态处理器（IdleStateHandler）。
                                      * 该处理器用于处理连接的空闲状态，以支持心跳机制。

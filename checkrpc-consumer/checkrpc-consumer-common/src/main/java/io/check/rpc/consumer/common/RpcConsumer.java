@@ -9,6 +9,7 @@ import io.check.rpc.consumer.common.handler.RpcConsumerHandler;
 import io.check.rpc.consumer.common.helper.RpcConsumerHandlerHelper;
 import io.check.rpc.consumer.common.initializer.RpcConsumerInitializer;
 import io.check.rpc.consumer.common.manager.ConsumerConnectionManager;
+import io.check.rpc.flow.processor.FlowPostProcessor;
 import io.check.rpc.loadbalancer.context.ConnectionsContext;
 import io.check.rpc.protocol.RpcProtocol;
 import io.check.rpc.protocol.meta.ServiceMeta;
@@ -16,6 +17,7 @@ import io.check.rpc.protocol.request.RpcRequest;
 import io.check.rpc.proxy.api.consumer.Consumer;
 import io.check.rpc.proxy.api.future.RPCFuture;
 import io.check.rpc.registry.api.RegistryService;
+import io.check.rpc.spi.loader.ExtensionLoader;
 import io.check.rpc.threadpool.ConcurrentThreadPool;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
@@ -80,6 +82,8 @@ public class RpcConsumer implements Consumer {
 
     private ConcurrentThreadPool concurrentThreadPool;
 
+    private FlowPostProcessor flowPostProcessor;
+
 
     private RpcConsumer() {
         localIp = IpUtils.getLocalHostIp();
@@ -130,6 +134,14 @@ public class RpcConsumer implements Consumer {
         return this;
     }
 
+    public RpcConsumer setFlowPostProcessor(String flowType){
+        if (StringUtils.isEmpty(flowType)){
+            flowType = RpcConstants.FLOW_POST_PROCESSOR_PRINT;
+        }
+        this.flowPostProcessor = ExtensionLoader.getExtension(FlowPostProcessor.class, flowType);
+        return this;
+    }
+
 
     public static RpcConsumer getInstance(){
         if (instance == null){
@@ -149,7 +161,7 @@ public class RpcConsumer implements Consumer {
      */
     public RpcConsumer buildNettyGroup(){
         bootstrap.group(eventLoopGroup).channel(NioSocketChannel.class)
-                .handler(new RpcConsumerInitializer(heartbeatInterval, concurrentThreadPool));
+                .handler(new RpcConsumerInitializer(heartbeatInterval, concurrentThreadPool, flowPostProcessor));
         return this;
     }
 

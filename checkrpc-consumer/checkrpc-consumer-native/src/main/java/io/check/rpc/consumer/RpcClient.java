@@ -94,12 +94,14 @@ public class RpcClient {
 
     private ConcurrentThreadPool concurrentThreadPool;
 
+    private String flowType;
+
     public RpcClient(String registryAddress, String registryType, String registryLoadBalanceType, String proxy,
                      String serviceVersion, String serviceGroup, String serializationType, long timeout, boolean async,
                      boolean oneway,int heartbeatInterval, int scanNotActiveChannelInterval,
                      int retryInterval, int retryTimes, boolean enableResultCache, int resultCacheExpire,
                      boolean enableDirectServer, String directServerUrl, boolean enableDelayConnection,
-                     int corePoolSize, int maximumPoolSize) {
+                     int corePoolSize, int maximumPoolSize, String flowType) {
         this.retryInterval = retryInterval;
         this.retryTimes = retryTimes;
         this.serviceVersion = serviceVersion;
@@ -118,6 +120,7 @@ public class RpcClient {
         this.directServerUrl = directServerUrl;
         this.enableDelayConnection = enableDelayConnection;
         this.concurrentThreadPool = ConcurrentThreadPool.getInstance(corePoolSize, maximumPoolSize);
+        this.flowType = flowType;
     }
 
     private RegistryService getRegistryService(String registryAddress, String registryType, String registryLoadBalanceType) {
@@ -147,6 +150,7 @@ public class RpcClient {
                         .setScanNotActiveChannelInterval(scanNotActiveChannelInterval)
                         .setEnableDelayConnection(enableDelayConnection)
                         .setConcurrentThreadPool(concurrentThreadPool)
+                        .setFlowPostProcessor(flowType)
                         .buildNettyGroup()
                         .buildConnection(registryService),
                 serializationType, async, oneway, registryService, enableResultCache, resultCacheExpire));
@@ -164,6 +168,7 @@ public class RpcClient {
                         .setScanNotActiveChannelInterval(scanNotActiveChannelInterval)
                         .setEnableDelayConnection(enableDelayConnection)
                         .setConcurrentThreadPool(concurrentThreadPool)
+                        .setFlowPostProcessor(flowType)
                         .buildNettyGroup()
                         .buildConnection(registryService)
                 ,
