@@ -20,3 +20,5 @@ checkrpc:
       scanNotActiveChannelInterval: 60000
       enableResultCache: true
       resultCacheExpire: 10000
+      corePoolSize: 16
+      maximumPoolSize: 16

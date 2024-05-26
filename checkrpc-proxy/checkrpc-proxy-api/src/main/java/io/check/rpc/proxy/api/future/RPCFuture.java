@@ -6,6 +6,7 @@ import io.check.rpc.protocol.RpcProtocol;
 import io.check.rpc.protocol.request.RpcRequest;
 import io.check.rpc.protocol.response.RpcResponse;
 import io.check.rpc.proxy.api.callback.AsyncRPCCallback;
+import io.check.rpc.threadpool.ConcurrentThreadPool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,14 +44,20 @@ public class RPCFuture extends CompletableFuture<Object> {
     private long responseTimeThreshold = 5000; // 响应时间阈值，默认为5000ms
 
     /**
+     * 并发处理线程池
+     */
+    private ConcurrentThreadPool concurrentThreadPool;
+
+    /**
      * 构造函数初始化RPC请求协议、同步对象和开始时间。
      *
      * @param requestRpcProtocol RPC请求协议
      */
-    public RPCFuture(RpcProtocol<RpcRequest> requestRpcProtocol) {
+    public RPCFuture(RpcProtocol<RpcRequest> requestRpcProtocol, ConcurrentThreadPool concurrentThreadPool) {
         this.sync = new Sync();
         this.requestRpcProtocol = requestRpcProtocol;
         this.startTime = System.currentTimeMillis();
+        this.concurrentThreadPool = concurrentThreadPool;
     }
 
     /**
@@ -148,7 +155,7 @@ public class RPCFuture extends CompletableFuture<Object> {
 
     private void runCallback(final AsyncRPCCallback callback) {
         final RpcResponse res = this.responseRpcProtocol.getBody();
-        ClientThreadPool.submit(() -> {
+        concurrentThreadPool.submit(() -> {
             if (!res.isError()) {
                 callback.onSuccess(res.getResult());
             } else{

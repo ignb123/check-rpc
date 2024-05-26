@@ -39,11 +39,19 @@ public class SpringAnnotationProviderConfig {
 
     @Value("${server.scanNotActiveChannelInterval}")
     private int scanNotActiveChannelInterval;
+    @Value("${maximumPoolSizeserver.enableResultCache}")
+    private boolean enableResultCache;
+    @Value("${server.resultCacheExpire}")
+    private int resultCacheExpire;
+    @Value("${server.corePoolSize}")
+    private int corePoolSize;
+    @Value("${server.maximumPoolSize}")
+    private int maximumPoolSize;
 
     @Bean
     public RpcSpringServer rpcSpringServer(){
         return new RpcSpringServer(serverAddress, registryAddress, registryType, registryLoadbalanceType, reflectType,
-                heartbeatInterval, scanNotActiveChannelInterval,true, 30000);
+                heartbeatInterval, scanNotActiveChannelInterval, enableResultCache, resultCacheExpire, corePoolSize, maximumPoolSize);
     }
 
 

@@ -69,10 +69,16 @@ public class BaseServer implements Server {
     //是否开启结果缓存
     private boolean enableResultCache;
 
+    //核心线程数
+    private int corePoolSize;
+
+    //最大线程数
+    private int maximumPoolSize;
+
     public BaseServer(String serverAddress, String registryAddress, String registryType,
                       String registryLoadBalanceType, String reflectType,
                       int heartbeatInterval, int scanNotActiveChannelInterval,
-                      boolean enableResultCache, int resultCacheExpire){
+                      boolean enableResultCache, int resultCacheExpire, int corePoolSize, int maximumPoolSize){
         if (heartbeatInterval > 0){
             this.heartbeatInterval = heartbeatInterval;
         }
@@ -92,6 +98,8 @@ public class BaseServer implements Server {
             this.resultCacheExpire = resultCacheExpire;
         }
         this.enableResultCache = enableResultCache;
+        this.corePoolSize = corePoolSize;
+        this.maximumPoolSize = maximumPoolSize;
     }
 
     private void startHeartbeat() {
@@ -153,7 +161,8 @@ public class BaseServer implements Server {
                                      */
                                     .addLast(RpcConstants.CODEC_SERVER_IDLE_HANDLER,
                                             new IdleStateHandler(0, 0, heartbeatInterval, TimeUnit.MILLISECONDS))
-                                    .addLast(RpcConstants.CODEC_HANDLER,new RpcProviderHandler(handlerMap, enableResultCache, resultCacheExpire, reflectType));
+                                    .addLast(RpcConstants.CODEC_HANDLER,new RpcProviderHandler(handlerMap, enableResultCache,
+                                            resultCacheExpire, corePoolSize, maximumPoolSize,reflectType));
                         }
                     })
                     // 配置服务器端连接队列大小

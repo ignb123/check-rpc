@@ -16,6 +16,7 @@ import io.check.rpc.protocol.request.RpcRequest;
 import io.check.rpc.proxy.api.consumer.Consumer;
 import io.check.rpc.proxy.api.future.RPCFuture;
 import io.check.rpc.registry.api.RegistryService;
+import io.check.rpc.threadpool.ConcurrentThreadPool;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
@@ -77,13 +78,13 @@ public class RpcConsumer implements Consumer {
     //未开启延迟连接时，是否已经初始化连接
     private volatile boolean initConnection = false;
 
+    private ConcurrentThreadPool concurrentThreadPool;
+
+
     private RpcConsumer() {
         localIp = IpUtils.getLocalHostIp();
         bootstrap = new Bootstrap();
         eventLoopGroup = new NioEventLoopGroup(4);
-        bootstrap.group(eventLoopGroup).channel(NioSocketChannel.class)
-                .handler(new RpcConsumerInitializer(heartbeatInterval));
-        this.startHeartbeat();
     }
     public RpcConsumer setEnableDirectServer(boolean enableDirectServer) {
         this.enableDirectServer = enableDirectServer;
@@ -99,6 +100,11 @@ public class RpcConsumer implements Consumer {
         if (heartbeatInterval > 0){
             this.heartbeatInterval = heartbeatInterval;
         }
+        return this;
+    }
+
+    public RpcConsumer setConcurrentThreadPool(ConcurrentThreadPool concurrentThreadPool) {
+        this.concurrentThreadPool = concurrentThreadPool;
         return this;
     }
 
@@ -137,6 +143,15 @@ public class RpcConsumer implements Consumer {
 
     }
 
+    /**
+     * 实例化bootstrap对象，并返回this对象
+     * @return
+     */
+    public RpcConsumer buildNettyGroup(){
+        bootstrap.group(eventLoopGroup).channel(NioSocketChannel.class)
+                .handler(new RpcConsumerInitializer(heartbeatInterval, concurrentThreadPool));
+        return this;
+    }
 
     private RpcConsumerHandler getRpcConsumerHandlerWithRetry(ServiceMeta serviceMeta) throws InterruptedException {
         logger.info("服务消费者连接服务提供者...");
@@ -271,6 +286,8 @@ public class RpcConsumer implements Consumer {
             this.initConnection(registryService);
             this.initConnection = true;
         }
+        //TODO 启动心跳，后续优化
+        this.startHeartbeat();
         return this;
     }
 

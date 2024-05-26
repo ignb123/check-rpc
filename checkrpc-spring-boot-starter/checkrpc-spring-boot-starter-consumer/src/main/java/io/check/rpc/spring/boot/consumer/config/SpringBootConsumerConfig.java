@@ -79,6 +79,10 @@ public final class SpringBootConsumerConfig {
     //是否开启延迟连接
     private boolean enableDelayConnection;
 
+    private int corePoolSize;
+
+    private int maximumPoolSize;
+
     public SpringBootConsumerConfig() {
     }
 
@@ -87,7 +91,8 @@ public final class SpringBootConsumerConfig {
                                     final int timeout, final boolean async, final boolean oneway, final int heartbeatInterval,
                                     final int scanNotActiveChannelInterval, final int retryInterval, final int retryTimes,
                                     final boolean enableResultCache, final int resultCacheExpire,
-                                    boolean enableDirectServer, String directServerUrl, boolean enableDelayConnection) {
+                                    boolean enableDirectServer, String directServerUrl, boolean enableDelayConnection,
+                                    int corePoolSize, int maximumPoolSize) {
         this.registryAddress = registryAddress;
         this.registryType = registryType;
         this.loadBalanceType = loadBalanceType;
@@ -109,6 +114,8 @@ public final class SpringBootConsumerConfig {
         this.enableDirectServer = enableDirectServer;
         this.directServerUrl = directServerUrl;
         this.enableDelayConnection = enableDelayConnection;
+        this.corePoolSize = corePoolSize;
+        this.maximumPoolSize = maximumPoolSize;
     }
 
     public String getRegistryAddress() {
@@ -261,5 +268,21 @@ public final class SpringBootConsumerConfig {
 
     public void setEnableDelayConnection(boolean enableDelayConnection) {
         this.enableDelayConnection = enableDelayConnection;
+    }
+
+    public int getCorePoolSize() {
+        return corePoolSize;
+    }
+
+    public void setCorePoolSize(int corePoolSize) {
+        this.corePoolSize = corePoolSize;
+    }
+
+    public int getMaximumPoolSize() {
+        return maximumPoolSize;
+    }
+
+    public void setMaximumPoolSize(int maximumPoolSize) {
+        this.maximumPoolSize = maximumPoolSize;
     }
 }

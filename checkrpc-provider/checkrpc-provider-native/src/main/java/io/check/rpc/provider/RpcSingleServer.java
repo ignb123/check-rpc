@@ -14,9 +14,10 @@ public class RpcSingleServer extends BaseServer {
                            String registryType, String registryLoadBalanceType,
                            String scanPackage, String reflectType,
                            int heartbeatInterval, int scanNotActiveChannelInterval,
-                           boolean enableResultCache, int resultCacheExpire) {
+                           boolean enableResultCache, int resultCacheExpire, int corePoolSize, int maximumPoolSize) {
         //调用父类构造方法
-        super(serverAddress, registryAddress, registryType, registryLoadBalanceType, reflectType,heartbeatInterval,scanNotActiveChannelInterval, enableResultCache, resultCacheExpire);
+        super(serverAddress, registryAddress, registryType, registryLoadBalanceType, reflectType,heartbeatInterval,
+                scanNotActiveChannelInterval, enableResultCache, resultCacheExpire, corePoolSize, maximumPoolSize);
         try {
             this.handlerMap = RpcServiceScanner.doScannerWithRpcServiceAnnotationFilterAndRegistryService(this.host, this.port, scanPackage, registryService);
         } catch (Exception e) {

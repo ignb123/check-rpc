@@ -13,6 +13,7 @@ import io.check.rpc.protocol.header.RpcHeaderFactory;
 import io.check.rpc.protocol.request.RpcRequest;
 import io.check.rpc.protocol.response.RpcResponse;
 import io.check.rpc.proxy.api.future.RPCFuture;
+import io.check.rpc.threadpool.ConcurrentThreadPool;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
@@ -47,6 +48,13 @@ public class RpcConsumerHandler extends SimpleChannelInboundHandler<RpcProtocol<
     // 获取远程对端的地址
     public SocketAddress getRemotePeer() {
         return remotePeer;
+    }
+
+    // 并发处理线程池
+    private ConcurrentThreadPool concurrentThreadPool;
+
+    public RpcConsumerHandler(ConcurrentThreadPool concurrentThreadPool){
+        this.concurrentThreadPool = concurrentThreadPool;
     }
 
     /**
@@ -116,8 +124,10 @@ public class RpcConsumerHandler extends SimpleChannelInboundHandler<RpcProtocol<
         if (protocol == null){
             return;
         }
-        // 记录接收到的数据
-        this.handlerMessage(protocol,ctx.channel());
+        concurrentThreadPool.submit(() -> {
+            // 记录接收到的数据
+            this.handlerMessage(protocol,ctx.channel());
+        });
     }
 
     private void handlerMessage(RpcProtocol<RpcResponse> protocol, Channel channel){
@@ -184,8 +194,10 @@ public class RpcConsumerHandler extends SimpleChannelInboundHandler<RpcProtocol<
         // 记录发送的数据
         logger.info("服务消费者发送的数据===>>>{}", JSONObject.toJSONString(protocol));
 
-        return oneway ? sendRequestOneway(protocol) : async ?
-                sendRequestAsync(protocol) : sendRequestSync(protocol);
+        return concurrentThreadPool.submit(() -> {
+            return oneway ? this.sendRequestOneway(protocol)
+                    : async ? sendRequestAsync(protocol) : this.sendRequestSync(protocol);
+        });
 
     }
 
@@ -217,7 +229,7 @@ public class RpcConsumerHandler extends SimpleChannelInboundHandler<RpcProtocol<
     }
 
     private RPCFuture getRpcFuture(RpcProtocol<RpcRequest> protocol) {
-        RPCFuture rpcFuture = new RPCFuture(protocol);
+        RPCFuture rpcFuture = new RPCFuture(protocol, concurrentThreadPool);
         long requestId = protocol.getHeader().getRequestId();
         pendingRPC.put(requestId, rpcFuture);
         return rpcFuture;

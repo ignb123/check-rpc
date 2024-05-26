@@ -112,4 +112,8 @@ public @interface RpcReference {
     //是否开启延迟连接
     boolean enableDelayConnection() default false;
 
+    int corePoolSize() default RpcConstants.DEFAULT_CORE_POOL_SIZE;
+
+    int maximumPoolSize() default RpcConstants.DEFAULT_MAXI_NUM_POOL_SIZE;
+
 }

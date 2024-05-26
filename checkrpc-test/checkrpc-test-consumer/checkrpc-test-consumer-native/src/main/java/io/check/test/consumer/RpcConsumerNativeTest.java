@@ -19,7 +19,8 @@ public class RpcConsumerNativeTest {
                 "1.0.0", "check", "protostuff",
                 3000, false, false,3000, 6000,
                 1000, 3,false, 10000,
-                false,"127.0.0.1:27880",true);
+                false,"127.0.0.1:27880",true,
+                16,16);
         DemoService demoService = rpcClient.create(DemoService.class);
         String result = demoService.hello("check");
         LOGGER.info("返回的结果数据===>>> " + result);
@@ -36,7 +37,8 @@ public class RpcConsumerNativeTest {
                 "1.0.0", "check", "protostuff",
                 3000, false, false,3000, 6000,
                 1000, 3,false, 10000,
-                false,"127.0.0.1:27880",true);
+                false,"127.0.0.1:27880",true,
+                16,16);
 
     }
 

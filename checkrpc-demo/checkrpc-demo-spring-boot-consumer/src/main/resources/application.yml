@@ -8,14 +8,14 @@ checkrpc:
       registryAddress: 127.0.0.1:2181
       # registry center type, zookeeper/etcd
       registryType: zookeeper
-      # registry loadbalancer type: zkconsistenthash
+      # registry loadbalance type: zkconsistenthash
       loadBalanceType: zkconsistenthash
       # proxy type/javassist/jdk
       proxy: cglib
       # version
       version: 1.0.0
       # group
-      group: hello
+      group: binghe
       # zkconsistenthash
       serializationType: zkconsistenthash
       # timeout
@@ -32,5 +32,18 @@ checkrpc:
       retryInterval: 1000
       # retryTimes
       retryTimes: 3
+      # enableResultCache
       enableResultCache: true
+      # resultCacheExpire
       resultCacheExpire: 10000
+      # enableDirectServer
+      enableDirectServer: true
+      # directServerUrl
+      directServerUrl: 127.0.0.1:27880
+      # enableDelayConnection
+      enableDelayConnection: true
+      # corePoolSize
+      corePoolSize: 16
+      # maximumPoolSize
+      maximumPoolSize: 16
+

@@ -10,7 +10,7 @@ public class RpcSingleServerTest {
                 "127.0.0.1:2181",
                 "zookeeper","zkconsistenthash", "io.check.rpc.test",
                 "javassist",30000, 60000,
-                true, 30000);
+                true, 30000,16,16);
         singleServer.startNettyServer();
     }
 }

@@ -14,6 +14,7 @@ import io.check.rpc.protocol.response.RpcResponse;
 import io.check.rpc.provider.common.cache.ProviderChannelCache;
 import io.check.rpc.reflect.api.ReflectInvoker;
 import io.check.rpc.spi.loader.ExtensionLoader;
+import io.check.rpc.threadpool.ConcurrentThreadPool;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
 import io.netty.handler.timeout.IdleStateEvent;
@@ -44,8 +45,13 @@ public class RpcProviderHandler extends SimpleChannelInboundHandler<RpcProtocol<
      */
     private final CacheResultManager<RpcProtocol<RpcResponse>> cacheResultManager;
 
+    /**
+     * 并发控制的线程池
+     */
+    private final ConcurrentThreadPool concurrentThreadPool;
+
     public RpcProviderHandler(Map<String,Object> handlerMap, boolean enableResultCache,
-                              int resultCacheExpire, String reflectType) {
+                              int resultCacheExpire, int corePoolSize, int maximumPoolSize,String reflectType) {
         this.handlerMap = handlerMap;
         this.reflectInvoker = ExtensionLoader.getExtension(ReflectInvoker.class,reflectType);
         if (resultCacheExpire <= 0){
@@ -53,6 +59,7 @@ public class RpcProviderHandler extends SimpleChannelInboundHandler<RpcProtocol<
         }
         this.enableResultCache = enableResultCache;
         this.cacheResultManager = CacheResultManager.getInstance(resultCacheExpire,enableResultCache);
+        this.concurrentThreadPool = ConcurrentThreadPool.getInstance(corePoolSize,maximumPoolSize);
     }
 
     @Override
@@ -74,7 +81,7 @@ public class RpcProviderHandler extends SimpleChannelInboundHandler<RpcProtocol<
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, RpcProtocol<RpcRequest> protocol) throws Exception {
-        ServerThreadPool.submit(() -> {
+        concurrentThreadPool.submit(() -> {
             RpcProtocol<RpcResponse> responseRpcProtocol = handlerMessage(protocol, ctx.channel());
             ctx.writeAndFlush(responseRpcProtocol).addListener(new ChannelFutureListener() {
                 @Override
