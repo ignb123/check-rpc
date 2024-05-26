@@ -1,6 +1,10 @@
 package io.check.rpc.proxy.api.object;
 
+import io.check.rpc.cache.result.CacheResultKey;
+import io.check.rpc.cache.result.CacheResultManager;
+import io.check.rpc.constants.RpcConstants;
 import io.check.rpc.protocol.RpcProtocol;
+import io.check.rpc.protocol.enumeration.RpcType;
 import io.check.rpc.protocol.header.RpcHeaderFactory;
 import io.check.rpc.protocol.request.RpcRequest;
 import io.check.rpc.proxy.api.async.IAsyncObjectProxy;
@@ -68,11 +72,23 @@ public class ObjectProxy <T> implements IAsyncObjectProxy,InvocationHandler {
      */
     private RegistryService registryService;
 
+    /**
+     * 是否开启结果缓存
+     */
+    private boolean enableResultCache;
+
+    /**
+     * 结果缓存管理器
+     */
+    private CacheResultManager<Object> cacheResultManager;
+
     public ObjectProxy(Class<T> clazz) {
         this.clazz = clazz;
     }
 
-    public ObjectProxy(Class<T> clazz, String serviceVersion, String serviceGroup, String serializationType, long timeout, Consumer consumer, boolean async, boolean oneway, RegistryService registryService) {
+    public ObjectProxy(Class<T> clazz, String serviceVersion, String serviceGroup, String serializationType,
+                       long timeout, Consumer consumer, boolean async, boolean oneway,
+                       RegistryService registryService, boolean enableResultCache, int resultCacheExpire) {
         this.clazz = clazz;
         this.serviceVersion = serviceVersion;
         this.timeout = timeout;
@@ -82,26 +98,23 @@ public class ObjectProxy <T> implements IAsyncObjectProxy,InvocationHandler {
         this.async = async;
         this.oneway = oneway;
         this.registryService = registryService;
-    }
-    @Override
-    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        if(Object.class == method.getDeclaringClass()) {
-            String name = method.getName();
-            if ("equals".equals(name)) {
-                return proxy == args[0];
-            } else if ("hashCode".equals(name)) {
-                return System.identityHashCode(proxy);
-            } else if ("toString".equals(name)) {
-                return proxy.getClass().getName() + "@" +
-                        Integer.toHexString(System.identityHashCode(proxy)) +
-                        ", with InvocationHandler " + this;
-            } else {
-                throw new IllegalStateException(String.valueOf(method));
-            }
+        this.enableResultCache = enableResultCache;
+        if (resultCacheExpire <= 0){
+            resultCacheExpire = RpcConstants.RPC_SCAN_RESULT_CACHE_EXPIRE;
         }
+        this.cacheResultManager = CacheResultManager.getInstance(resultCacheExpire, enableResultCache);
+    }
 
+    /**
+     * 真正调用服务提供者远程方法
+     * @param method
+     * @param args
+     * @return
+     * @throws Exception
+     */
+    private Object invokeSendRequestMethod(Method method, Object[] args) throws Exception {
         RpcProtocol<RpcRequest> requestRpcProtocol = new RpcProtocol<RpcRequest>();
-        requestRpcProtocol.setHeader(RpcHeaderFactory.getRequestHeader(serializationType));
+        requestRpcProtocol.setHeader(RpcHeaderFactory.getRequestHeader(serializationType, RpcType.REQUEST.getType()));
         RpcRequest request = new RpcRequest();
         request.setVersion(this.serviceVersion);
         request.setClassName(method.getDeclaringClass().getName());
@@ -116,7 +129,7 @@ public class ObjectProxy <T> implements IAsyncObjectProxy,InvocationHandler {
         LOGGER.debug(method.getDeclaringClass().getName());
         LOGGER.debug(method.getName());
 
-        if (method.getParameterTypes() != null && method.getParameterTypes().length > 0) {
+        if (method.getParameterTypes() != null && method.getParameterTypes().length > 0){
             for (int i = 0; i < method.getParameterTypes().length; ++i) {
                 LOGGER.debug(method.getParameterTypes()[i].getName());
             }
@@ -128,10 +141,54 @@ public class ObjectProxy <T> implements IAsyncObjectProxy,InvocationHandler {
             }
         }
 
-        RPCFuture rpcFuture = this.consumer.sendRequest(requestRpcProtocol,registryService);
-        return rpcFuture == null ?
-                null : timeout > 0 ?
-                rpcFuture.get(timeout, TimeUnit.MILLISECONDS) : rpcFuture.get();
+        RPCFuture rpcFuture = this.consumer.sendRequest(requestRpcProtocol, registryService);
+        return rpcFuture == null ? null : timeout > 0 ? rpcFuture.get(timeout, TimeUnit.MILLISECONDS) : rpcFuture.get();
+    }
+
+    /**
+     * 结合缓存处理结果数据
+     * @param method
+     * @param args
+     * @return
+     * @throws Exception
+     */
+    private Object invokeSendRequestMethodCache(Method method, Object[] args) throws Exception {
+        //开启缓存，则处理缓存
+        CacheResultKey cacheResultKey = new CacheResultKey(method.getDeclaringClass().getName(),
+                method.getName(), method.getParameterTypes(), args, serviceVersion, serviceGroup);
+        Object obj = this.cacheResultManager.get(cacheResultKey);
+        if (obj == null){
+            obj = invokeSendRequestMethod(method, args);
+            if (obj != null){
+                cacheResultKey.setCacheTimeStamp(System.currentTimeMillis());
+                this.cacheResultManager.put(cacheResultKey, obj);
+            }
+        }
+        return obj;
+    }
+
+    @Override
+    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+        if(Object.class == method.getDeclaringClass()) {
+            String name = method.getName();
+            // 根据方法名执行相应的逻辑
+            if ("equals".equals(name)) {
+                return proxy == args[0]; // 比较代理对象与参数是否相等
+            } else if ("hashCode".equals(name)) {
+                return System.identityHashCode(proxy); // 返回代理对象的系统身份哈希码
+            } else if ("toString".equals(name)) {
+                // 返回代理对象的字符串表示
+                return proxy.getClass().getName() + "@" +
+                        Integer.toHexString(System.identityHashCode(proxy)) +
+                        ", with InvocationHandler " + this;
+            } else {
+                // 如果方法名不是预期内的一个，抛出异常
+                throw new IllegalStateException(String.valueOf(method));
+            }
+        }
+        //开启缓存，直接调用方法请求服务提供者
+        if (enableResultCache) return invokeSendRequestMethodCache(method, args);
+        return invokeSendRequestMethod(method, args);
     }
 
     @Override

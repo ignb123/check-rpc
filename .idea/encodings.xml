@@ -3,6 +3,8 @@
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$/checkrpc-annotation/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/checkrpc-annotation/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/checkrpc-cache/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/checkrpc-cache/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/checkrpc-codec/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/checkrpc-codec/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/checkrpc-common/src/main/java" charset="UTF-8" />

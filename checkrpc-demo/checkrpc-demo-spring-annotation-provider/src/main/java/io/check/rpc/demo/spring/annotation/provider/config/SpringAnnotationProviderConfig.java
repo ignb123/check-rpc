@@ -42,7 +42,8 @@ public class SpringAnnotationProviderConfig {
 
     @Bean
     public RpcSpringServer rpcSpringServer(){
-        return new RpcSpringServer(serverAddress, registryAddress, registryType, registryLoadbalanceType, reflectType, heartbeatInterval, scanNotActiveChannelInterval);
+        return new RpcSpringServer(serverAddress, registryAddress, registryType, registryLoadbalanceType, reflectType,
+                heartbeatInterval, scanNotActiveChannelInterval,true, 30000);
     }
 
 

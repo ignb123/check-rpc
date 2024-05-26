@@ -1,5 +1,6 @@
 package io.check.rpc.annotation;
 
+import io.check.rpc.constants.RpcConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.lang.annotation.ElementType;
@@ -86,5 +87,15 @@ public @interface RpcReference {
      * 重试间隔时间
      */
     int retryTimes() default 3;
+
+    /**
+     * 是否开启结果缓存
+     */
+    boolean enableResultCache() default false;
+
+    /**
+     * 缓存结果的时长，单位是毫秒
+     */
+    int resultCacheExpire() default RpcConstants.RPC_SCAN_RESULT_CACHE_EXPIRE;
 
 }

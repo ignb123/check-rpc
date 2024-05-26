@@ -213,6 +213,7 @@ public class RpcConsumerHandler extends SimpleChannelInboundHandler<RpcProtocol<
     public void close() {
         // 发送空缓冲区并监听关闭事件
         channel.writeAndFlush(Unpooled.EMPTY_BUFFER).addListener(ChannelFutureListener.CLOSE);
+        ConsumerChannelCache.remove(channel);
     }
 
     private RPCFuture getRpcFuture(RpcProtocol<RpcRequest> protocol) {

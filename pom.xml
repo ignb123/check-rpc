@@ -25,6 +25,7 @@
         <module>checkrpc-reflect</module>
         <module>checkrpc-demo</module>
         <module>checkrpc-spring-boot-starter</module>
+        <module>checkrpc-cache</module>
     </modules>
 
     <properties>

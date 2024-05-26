@@ -18,3 +18,5 @@ checkrpc:
       heartbeatInterval: 30000
       # scanNotActiveChannelInterval
       scanNotActiveChannelInterval: 60000
+      enableResultCache: true
+      resultCacheExpire: 10000

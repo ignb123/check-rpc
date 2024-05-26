@@ -32,3 +32,5 @@ checkrpc:
       retryInterval: 1000
       # retryTimes
       retryTimes: 3
+      enableResultCache: true
+      resultCacheExpire: 10000

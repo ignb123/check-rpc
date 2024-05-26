@@ -2,6 +2,7 @@ package io.check.rpc.consumer.spring;
 
 import io.check.rpc.annotation.RpcReference;
 import io.check.rpc.constants.RpcConstants;
+import io.check.rpc.consumer.spring.context.RpcConsumerSpringContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -112,6 +113,8 @@ public class RpcConsumerPostProcessor implements ApplicationContextAware, BeanCl
             builder.addPropertyValue("heartbeatInterval", annotation.heartbeatInterval());
             builder.addPropertyValue("retryInterval", annotation.retryInterval());
             builder.addPropertyValue("retryTimes", annotation.retryTimes());
+            builder.addPropertyValue("enableResultCache", annotation.enableResultCache());
+            builder.addPropertyValue("resultCacheExpire", annotation.resultCacheExpire());
 
             // 获取构建完成的BeanDefinition
             BeanDefinition beanDefinition = builder.getBeanDefinition();
@@ -125,5 +128,6 @@ public class RpcConsumerPostProcessor implements ApplicationContextAware, BeanCl
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.context = applicationContext;
+        RpcConsumerSpringContext.getInstance().setContext(applicationContext);
     }
 }

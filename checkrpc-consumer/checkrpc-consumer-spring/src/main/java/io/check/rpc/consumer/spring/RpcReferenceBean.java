@@ -81,6 +81,18 @@ public class RpcReferenceBean implements FactoryBean<Object> {
     //重试次数
     private int retryTimes = 3;
 
+    private RpcClient rpcClient;
+
+    /**
+     * 是否开启结果缓存
+     */
+    private boolean enableResultCache;
+
+    /**
+     * 缓存结果的时长，单位是毫秒
+     */
+    private int resultCacheExpire;
+
     @Override
     public Object getObject() throws Exception {
         return object;
@@ -92,8 +104,10 @@ public class RpcReferenceBean implements FactoryBean<Object> {
     }
 
     @SuppressWarnings("unchecked")
-    public void init() throws Exception{
-        RpcClient rpcClient = new RpcClient(registryAddress, registryType, loadBalanceType, proxy, version, group, serializationType, timeout, async, oneway, heartbeatInterval, scanNotActiveChannelInterval, retryInterval, retryTimes);
+    public void init(){
+        rpcClient = new RpcClient(registryAddress, registryType, loadBalanceType, proxy, version, group,
+                serializationType, timeout, async, oneway, heartbeatInterval, scanNotActiveChannelInterval,
+                retryInterval, retryTimes, enableResultCache, resultCacheExpire);
         this.object = rpcClient.create(interfaceClass);
     }
 
@@ -219,5 +233,29 @@ public class RpcReferenceBean implements FactoryBean<Object> {
 
     public void setRetryTimes(int retryTimes) {
         this.retryTimes = retryTimes;
+    }
+
+    public RpcClient getRpcClient() {
+        return rpcClient;
+    }
+
+    public void setRpcClient(RpcClient rpcClient) {
+        this.rpcClient = rpcClient;
+    }
+
+    public boolean isEnableResultCache() {
+        return enableResultCache;
+    }
+
+    public void setEnableResultCache(boolean enableResultCache) {
+        this.enableResultCache = enableResultCache;
+    }
+
+    public int getResultCacheExpire() {
+        return resultCacheExpire;
+    }
+
+    public void setResultCacheExpire(int resultCacheExpire) {
+        this.resultCacheExpire = resultCacheExpire;
     }
 }

@@ -63,7 +63,16 @@ public class BaseServer implements Server {
     //扫描并移除空闲连接时间，默认60秒
     private int scanNotActiveChannelInterval = 6000;
 
-    public BaseServer(String serverAddress, String registryAddress, String registryType, String registryLoadBalanceType, String reflectType, int heartbeatInterval, int scanNotActiveChannelInterval){
+    //结果缓存过期时长，默认5秒
+    private int resultCacheExpire = 5000;
+
+    //是否开启结果缓存
+    private boolean enableResultCache;
+
+    public BaseServer(String serverAddress, String registryAddress, String registryType,
+                      String registryLoadBalanceType, String reflectType,
+                      int heartbeatInterval, int scanNotActiveChannelInterval,
+                      boolean enableResultCache, int resultCacheExpire){
         if (heartbeatInterval > 0){
             this.heartbeatInterval = heartbeatInterval;
         }
@@ -78,6 +87,11 @@ public class BaseServer implements Server {
 
         this.reflectType = reflectType;
         this.registryService = this.getRegistryService(registryAddress,registryType,registryLoadBalanceType);
+
+        if (resultCacheExpire > 0){
+            this.resultCacheExpire = resultCacheExpire;
+        }
+        this.enableResultCache = enableResultCache;
     }
 
     private void startHeartbeat() {
@@ -139,7 +153,7 @@ public class BaseServer implements Server {
                                      */
                                     .addLast(RpcConstants.CODEC_SERVER_IDLE_HANDLER,
                                             new IdleStateHandler(0, 0, heartbeatInterval, TimeUnit.MILLISECONDS))
-                                    .addLast(RpcConstants.CODEC_HANDLER,new RpcProviderHandler(handlerMap,reflectType));
+                                    .addLast(RpcConstants.CODEC_HANDLER,new RpcProviderHandler(handlerMap, enableResultCache, resultCacheExpire, reflectType));
                         }
                     })
                     // 配置服务器端连接队列大小
