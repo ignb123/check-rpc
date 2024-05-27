@@ -123,6 +123,9 @@ public class RpcConsumerPostProcessor implements ApplicationContextAware, BeanCl
             builder.addPropertyValue("flowType", annotation.flowType());
             builder.addPropertyValue("enableBuffer", annotation.enableBuffer());
             builder.addPropertyValue("bufferSize", annotation.bufferSize());
+            builder.addPropertyValue("reflectType", annotation.reflectType());
+            builder.addPropertyValue("fallbackClass", annotation.fallbackClass());
+            builder.addPropertyValue("fallbackClassName", annotation.fallbackClassName());
             // 获取构建完成的BeanDefinition
             BeanDefinition beanDefinition = builder.getBeanDefinition();
             // 将BeanDefinition与字段名映射，存储起来

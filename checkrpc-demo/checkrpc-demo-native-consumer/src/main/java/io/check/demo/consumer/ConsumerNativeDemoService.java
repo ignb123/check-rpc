@@ -25,7 +25,8 @@ public class ConsumerNativeDemoService {
                 1000, 3, false, 10000,
                 true,"127.0.0.1:27880",
                 false, 16, 16,"print",
-                true,2);
+                true,2,"jdk",
+                "io.check.demo.consumer.hello.FallbackDemoServiceImpl");
     }
 
     @Test
@@ -44,10 +45,8 @@ public class ConsumerNativeDemoService {
     @Test
     public void testInterfaceRpc1() throws InterruptedException {
         DemoService demoService = rpcClient.create(DemoService.class);
-        for (int i = 0; i < 5; i++){
-            String result = demoService.hello("check");
-            LOGGER.info("返回的结果数据===>>> " + result);
-        }
+        String result = demoService.hello("check");
+        LOGGER.info("返回的结果数据===>>> " + result);
         while (true){
             Thread.sleep(1000);
         }

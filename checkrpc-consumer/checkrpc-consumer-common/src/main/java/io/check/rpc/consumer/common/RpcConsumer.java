@@ -4,7 +4,6 @@ import io.check.rpc.common.exception.RpcException;
 import io.check.rpc.constants.RpcConstants;
 import io.check.rpc.common.helper.RpcServiceHelper;
 import io.check.rpc.common.ip.IpUtils;
-import io.check.rpc.common.threadpool.ClientThreadPool;
 import io.check.rpc.consumer.common.handler.RpcConsumerHandler;
 import io.check.rpc.consumer.common.helper.RpcConsumerHandlerHelper;
 import io.check.rpc.consumer.common.initializer.RpcConsumerInitializer;
@@ -354,7 +353,7 @@ public class RpcConsumer implements Consumer {
         eventLoopGroup.shutdownGracefully();
 
         // 关闭客户端线程池，停止接受新的任务并等待已提交任务完成
-        ClientThreadPool.shutdown();
+        concurrentThreadPool.stop();
 
         executorService.shutdown();
 

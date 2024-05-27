@@ -89,6 +89,10 @@ public final class SpringBootConsumerConfig {
 
     private int bufferSize;
 
+    private String reflectType;
+
+    private String fallbackClassName;
+
     public SpringBootConsumerConfig() {
     }
 
@@ -100,7 +104,7 @@ public final class SpringBootConsumerConfig {
                                     final boolean enableDirectServer, final String directServerUrl,
                                     final boolean enableDelayConnection,
                                     final int corePoolSize, final int maximumPoolSize, final String flowType,
-                                    boolean enableBuffer, int bufferSize) {
+                                    boolean enableBuffer, int bufferSize, String reflectType, String fallbackClassName) {
         this.registryAddress = registryAddress;
         this.registryType = registryType;
         this.loadBalanceType = loadBalanceType;
@@ -127,6 +131,8 @@ public final class SpringBootConsumerConfig {
         this.flowType = flowType;
         this.enableBuffer = enableBuffer;
         this.bufferSize = bufferSize;
+        this.reflectType = reflectType;
+        this.fallbackClassName = fallbackClassName;
     }
 
     public String getRegistryAddress() {
@@ -319,5 +325,21 @@ public final class SpringBootConsumerConfig {
 
     public void setBufferSize(int bufferSize) {
         this.bufferSize = bufferSize;
+    }
+
+    public String getReflectType() {
+        return reflectType;
+    }
+
+    public void setReflectType(String reflectType) {
+        this.reflectType = reflectType;
+    }
+
+    public String getFallbackClassName() {
+        return fallbackClassName;
+    }
+
+    public void setFallbackClassName(String fallbackClassName) {
+        this.fallbackClassName = fallbackClassName;
     }
 }

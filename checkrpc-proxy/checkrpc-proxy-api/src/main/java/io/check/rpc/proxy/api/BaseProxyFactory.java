@@ -20,7 +20,10 @@ public abstract class BaseProxyFactory<T> implements ProxyFactory{
                 proxyConfig.isOneway(),
                 proxyConfig.getRegistryService(),
                 proxyConfig.isEnableResultCache(),
-                proxyConfig.getResultCacheExpire());
+                proxyConfig.getResultCacheExpire(),
+                proxyConfig.getReflectType(),
+                proxyConfig.getFallbackClassName(),
+                proxyConfig.getFallbackClass());
     }
 
 }

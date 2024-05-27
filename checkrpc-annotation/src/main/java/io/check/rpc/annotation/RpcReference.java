@@ -122,4 +122,18 @@ public @interface RpcReference {
 
     int bufferSize() default RpcConstants.DEFAULT_BUFFER_SIZE;
 
+    /**
+     * 容错class
+     */
+    Class<?> fallbackClass() default void.class;
+
+    /**
+     * 容错class名称
+     */
+    String fallbackClassName() default RpcConstants.DEFAULT_FALLBACK_CLASS_NAME;
+
+    /**
+     * 反射类型
+     */
+    String reflectType() default RpcConstants.DEFAULT_REFLECT_TYPE;
 }
