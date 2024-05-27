@@ -53,6 +53,9 @@ public final class SpringBootProviderConfig {
 
     private String flowType;
 
+    private int maxConnections;
+    private String disuseStrategyType;
+
     public SpringBootProviderConfig() {
     }
 
@@ -60,7 +63,8 @@ public final class SpringBootProviderConfig {
                                     final String registryLoadBalanceType, final String reflectType,
                                     final int heartbeatInterval, int scanNotActiveChannelInterval,
                                     final boolean enableResultCache, final int resultCacheExpire,
-                                    final int corePoolSize, final int maximumPoolSize, String flowType) {
+                                    final int corePoolSize, final int maximumPoolSize, String flowType,
+                                    int maxConnections, String disuseStrategyType) {
         this.serverAddress = serverAddress;
         this.registryAddress = registryAddress;
         this.registryType = registryType;
@@ -75,6 +79,8 @@ public final class SpringBootProviderConfig {
         this.corePoolSize = corePoolSize;
         this.maximumPoolSize = maximumPoolSize;
         this.flowType = flowType;
+        this.maxConnections = maxConnections;
+        this.disuseStrategyType = disuseStrategyType;
     }
 
     public String getServerAddress() {
@@ -171,5 +177,21 @@ public final class SpringBootProviderConfig {
 
     public void setFlowType(String flowType) {
         this.flowType = flowType;
+    }
+
+    public int getMaxConnections() {
+        return maxConnections;
+    }
+
+    public void setMaxConnections(int maxConnections) {
+        this.maxConnections = maxConnections;
+    }
+
+    public String getDisuseStrategyType() {
+        return disuseStrategyType;
+    }
+
+    public void setDisuseStrategyType(String disuseStrategyType) {
+        this.disuseStrategyType = disuseStrategyType;
     }
 }

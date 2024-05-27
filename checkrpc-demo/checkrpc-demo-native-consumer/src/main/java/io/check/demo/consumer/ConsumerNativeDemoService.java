@@ -30,7 +30,6 @@ public class ConsumerNativeDemoService {
     @Test
     public void testInterfaceRpc() throws InterruptedException {
         DemoService demoService = rpcClient.create(DemoService.class);
-        Thread.sleep(5000);
         for (int i = 0; i < 5; i++){
             String result = demoService.hello("check");
             LOGGER.info("返回的结果数据===>>> " + result);
@@ -41,11 +40,22 @@ public class ConsumerNativeDemoService {
     }
 
     @Test
+    public void testInterfaceRpc1() throws InterruptedException {
+        DemoService demoService = rpcClient.create(DemoService.class);
+        while (true){
+            String result = demoService.hello("check");
+            LOGGER.info("返回的结果数据===>>> " + result);
+        }
+    }
+
+    @Test
     public void testAsyncInterfaceRpc() throws Exception {
         IAsyncObjectProxy demoService = rpcClient.createAsync(DemoService.class);
         RPCFuture future = demoService.call("hello", "check");
         LOGGER.info("返回的结果数据===>>> " + future.get());
-        rpcClient.shutdown();
+        while (true){
+            Thread.sleep(1000);
+        }
     }
 
 }

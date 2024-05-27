@@ -28,6 +28,8 @@
         <module>checkrpc-cache</module>
         <module>checkrpc-threadpool</module>
         <module>checkrpc-flow</module>
+        <module>checkrpc-connection</module>
+        <module>checkrpc-disuse</module>
     </modules>
 
     <properties>

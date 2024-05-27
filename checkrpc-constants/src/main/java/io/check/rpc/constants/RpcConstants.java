@@ -276,4 +276,9 @@ public class RpcConstants {
      */
     public static final String FLOW_POST_PROCESSOR_PRINT = "print";
 
+    /**
+     * 默认策略
+     */
+    public static final String RPC_CONNECTION_DISUSE_STRATEGY_DEFAULT = "strategy_default";
+
 }

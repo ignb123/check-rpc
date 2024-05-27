@@ -11,7 +11,8 @@ public class ProviderNativeDemo {
                 "127.0.0.1:27880", "127.0.0.1:2181",
                 "zookeeper", "random","io.check.rpc.demo",
                 "cglib",30000, 60000,
-                true, 10000,16,16,"print");
+                true, 10000,16,16,"print",
+                1,"strategy_default");
         singleServer.startNettyServer();
     }
 

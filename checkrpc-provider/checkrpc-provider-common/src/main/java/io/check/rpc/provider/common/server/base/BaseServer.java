@@ -79,11 +79,17 @@ public class BaseServer implements Server {
     //流控分析后置处理器
     private FlowPostProcessor flowPostProcessor;
 
+    //最大连接限制
+    private int maxConnections;
+
+    //拒绝策略类型
+    private String disuseStrategyType;
+
     public BaseServer(String serverAddress, String registryAddress, String registryType,
                       String registryLoadBalanceType, String reflectType,
                       int heartbeatInterval, int scanNotActiveChannelInterval,
                       boolean enableResultCache, int resultCacheExpire, int corePoolSize,
-                      int maximumPoolSize, String flowType){
+                      int maximumPoolSize, String flowType, int maxConnections, String disuseStrategyType){
         if (heartbeatInterval > 0){
             this.heartbeatInterval = heartbeatInterval;
         }
@@ -106,6 +112,8 @@ public class BaseServer implements Server {
         this.corePoolSize = corePoolSize;
         this.maximumPoolSize = maximumPoolSize;
         this.flowPostProcessor = ExtensionLoader.getExtension(FlowPostProcessor.class, flowType);
+        this.maxConnections = maxConnections;
+        this.disuseStrategyType = disuseStrategyType;
     }
 
     private void startHeartbeat() {
@@ -168,7 +176,7 @@ public class BaseServer implements Server {
                                     .addLast(RpcConstants.CODEC_SERVER_IDLE_HANDLER,
                                             new IdleStateHandler(0, 0, heartbeatInterval, TimeUnit.MILLISECONDS))
                                     .addLast(RpcConstants.CODEC_HANDLER,new RpcProviderHandler(handlerMap, enableResultCache,
-                                            resultCacheExpire, corePoolSize, maximumPoolSize,reflectType));
+                                            resultCacheExpire, corePoolSize, maximumPoolSize,reflectType,maxConnections, disuseStrategyType));
                         }
                     })
                     // 配置服务器端连接队列大小
