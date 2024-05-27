@@ -60,5 +60,12 @@
             <version>${project.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>io.check.rpc</groupId>
+            <artifactId>checkrpc-buffer</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+
     </dependencies>
 </project>

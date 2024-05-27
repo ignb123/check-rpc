@@ -1,6 +1,7 @@
 package io.check.rpc.consumer.common.handler;
 
 import com.alibaba.fastjson2.JSONObject;
+import io.check.rpc.buffer.cache.BufferCacheManager;
 import io.check.rpc.constants.RpcConstants;
 import io.check.rpc.consumer.common.cache.ConsumerChannelCache;
 import io.check.rpc.consumer.common.context.RpcContext;
@@ -13,6 +14,7 @@ import io.check.rpc.protocol.header.RpcHeaderFactory;
 import io.check.rpc.protocol.request.RpcRequest;
 import io.check.rpc.protocol.response.RpcResponse;
 import io.check.rpc.proxy.api.future.RPCFuture;
+import io.check.rpc.threadpool.BufferCacheThreadPool;
 import io.check.rpc.threadpool.ConcurrentThreadPool;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
@@ -53,8 +55,25 @@ public class RpcConsumerHandler extends SimpleChannelInboundHandler<RpcProtocol<
     // 并发处理线程池
     private ConcurrentThreadPool concurrentThreadPool;
 
-    public RpcConsumerHandler(ConcurrentThreadPool concurrentThreadPool){
+    /**
+     * 是否开启缓冲区
+     */
+    private boolean enableBuffer;
+
+    /**
+     * 缓冲区管理器
+     */
+    private BufferCacheManager<RpcProtocol<RpcResponse>> bufferCacheManager;
+
+    public RpcConsumerHandler(boolean enableBuffer, int bufferSize, ConcurrentThreadPool concurrentThreadPool){
         this.concurrentThreadPool = concurrentThreadPool;
+        this.enableBuffer = enableBuffer;
+        if (enableBuffer){
+            this.bufferCacheManager = BufferCacheManager.getInstance(bufferSize);
+            BufferCacheThreadPool.submit(() -> {
+                consumerBufferCache();
+            });
+        }
     }
 
     /**
@@ -130,15 +149,43 @@ public class RpcConsumerHandler extends SimpleChannelInboundHandler<RpcProtocol<
         });
     }
 
+    /**
+     * 不断消费缓冲区中的数据，调用handlerResponseMessage()方法进行处理
+     */
+    private void consumerBufferCache() {
+        //不断消息缓冲区的数据
+        while (true){
+            RpcProtocol<RpcResponse> protocol = this.bufferCacheManager.take();
+            if (protocol != null){
+                this.handlerResponseMessage(protocol);
+            }
+        }
+    }
+
+    /**
+     * 根据enableBuffer的值进行不同的处理逻辑，
+     * 当enableBuffer的值为true时，会将数据放入缓冲区，
+     * 当enableBuffer的值为false时，调用handlerResponseMessage()方法
+     * @param protocol
+     */
+    private void handlerResponseMessageOrBuffer(RpcProtocol<RpcResponse> protocol){
+        if (enableBuffer){
+            logger.info("enable buffer...");
+            this.bufferCacheManager.put(protocol);
+        }else {
+            this.handlerResponseMessage(protocol);
+        }
+    }
+
     private void handlerMessage(RpcProtocol<RpcResponse> protocol, Channel channel){
         RpcHeader header = protocol.getHeader();
-        // 服务提供者响应服务消费者的心跳数据
-        if(header.getMsgType() == (byte) RpcType.HEARTBEAT_TO_CONSUMER.getType()){
-            this.handlerHeartbeatMessage(protocol,channel);
-        }else if(header.getMsgType() == (byte) RpcType.HEARTBEAT_FROM_PROVIDER.getType()){ //从服务提供者发起的心跳数据
-            this.handlerHeartbeatMessageFromProvider(protocol,channel);
-        } else if(header.getMsgType() == (byte) RpcType.RESPONSE.getType()){ // 响应消息
-            this.handlerResponseMessage(protocol,header);
+        //服务提供者响应的心跳消息
+        if (header.getMsgType() == (byte) RpcType.HEARTBEAT_TO_CONSUMER.getType()){
+            this.handlerHeartbeatMessageToConsumer(protocol, channel);
+        }else if (header.getMsgType() == (byte) RpcType.HEARTBEAT_FROM_PROVIDER.getType()){
+            this.handlerHeartbeatMessageFromProvider(protocol, channel);
+        }else if (header.getMsgType() == (byte) RpcType.RESPONSE.getType()){ //响应消息
+            this.handlerResponseMessageOrBuffer(protocol);
         }
     }
 
@@ -157,14 +204,13 @@ public class RpcConsumerHandler extends SimpleChannelInboundHandler<RpcProtocol<
         requestRpcProtocol.setHeader(header);
         requestRpcProtocol.setBody(request);
         channel.writeAndFlush(requestRpcProtocol);
-//        logger.info("故意不发送pong消息");
     }
     /**
      * 处理心跳消息，这里由于心跳是服务消费者向服务提供者发起，服务提供者接收到心跳消息后，
      * 会立即进行响应。所以，在服务消费者接收到服务提供者响应的心跳消息后，可不必在任何处理，打印日志即可
      * @param protocol
      */
-    private void handlerHeartbeatMessage(RpcProtocol<RpcResponse> protocol, Channel channel) {
+    private void handlerHeartbeatMessageToConsumer(RpcProtocol<RpcResponse> protocol, Channel channel) {
         //此处简单打印即可,实际场景可不做处理
         logger.info("receive service provider heartbeat message, the provider is: {}, the heartbeat message is: {}",
                 channel.remoteAddress(), protocol.getBody().getResult());
@@ -176,10 +222,9 @@ public class RpcConsumerHandler extends SimpleChannelInboundHandler<RpcProtocol<
     /**
      * 获取到响应的结果信息后，会唤醒阻塞的线程，向客户端响应数据
      * @param protocol
-     * @param header
      */
-    private void handlerResponseMessage(RpcProtocol<RpcResponse> protocol, RpcHeader header) {
-        long requestId = header.getRequestId();
+    private void handlerResponseMessage(RpcProtocol<RpcResponse> protocol) {
+        long requestId = protocol.getHeader().getRequestId();
         RPCFuture rpcFuture = pendingRPC.remove(requestId);
         if(rpcFuture != null){
             rpcFuture.done(protocol);

@@ -11,7 +11,7 @@ public class RpcSingleServerTest {
                 "zookeeper","zkconsistenthash", "io.check.rpc.test",
                 "javassist",30000, 60000,
                 true, 30000,16,16,"print",
-                16, "LRU");
+                16, "LRU",true, 1024);
         singleServer.startNettyServer();
     }
 }

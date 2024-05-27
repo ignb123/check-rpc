@@ -12,7 +12,7 @@ public class ProviderNativeDemo {
                 "zookeeper", "random","io.check.rpc.demo",
                 "cglib",30000, 60000,
                 true, 10000,16,16,"print",
-                1,"lru");
+                1,"lru",true,2);
         singleServer.startNettyServer();
     }
 

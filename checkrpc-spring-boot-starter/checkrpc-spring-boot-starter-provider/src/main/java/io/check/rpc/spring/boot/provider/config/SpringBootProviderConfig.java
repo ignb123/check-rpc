@@ -56,6 +56,9 @@ public final class SpringBootProviderConfig {
     private int maxConnections;
     private String disuseStrategyType;
 
+    private boolean enableBuffer;
+    private int bufferSize;
+
     public SpringBootProviderConfig() {
     }
 
@@ -64,7 +67,7 @@ public final class SpringBootProviderConfig {
                                     final int heartbeatInterval, int scanNotActiveChannelInterval,
                                     final boolean enableResultCache, final int resultCacheExpire,
                                     final int corePoolSize, final int maximumPoolSize, String flowType,
-                                    int maxConnections, String disuseStrategyType) {
+                                    int maxConnections, String disuseStrategyType, boolean enableBuffer, int bufferSize) {
         this.serverAddress = serverAddress;
         this.registryAddress = registryAddress;
         this.registryType = registryType;
@@ -81,6 +84,8 @@ public final class SpringBootProviderConfig {
         this.flowType = flowType;
         this.maxConnections = maxConnections;
         this.disuseStrategyType = disuseStrategyType;
+        this.enableBuffer = enableBuffer;
+        this.bufferSize = bufferSize;
     }
 
     public String getServerAddress() {
@@ -193,5 +198,21 @@ public final class SpringBootProviderConfig {
 
     public void setDisuseStrategyType(String disuseStrategyType) {
         this.disuseStrategyType = disuseStrategyType;
+    }
+
+    public boolean isEnableBuffer() {
+        return enableBuffer;
+    }
+
+    public void setEnableBuffer(boolean enableBuffer) {
+        this.enableBuffer = enableBuffer;
+    }
+
+    public int getBufferSize() {
+        return bufferSize;
+    }
+
+    public void setBufferSize(int bufferSize) {
+        this.bufferSize = bufferSize;
     }
 }

@@ -118,4 +118,8 @@ public @interface RpcReference {
 
     String flowType() default RpcConstants.FLOW_POST_PROCESSOR_PRINT;
 
+    boolean enableBuffer() default false;
+
+    int bufferSize() default RpcConstants.DEFAULT_BUFFER_SIZE;
+
 }

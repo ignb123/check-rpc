@@ -84,12 +84,29 @@ public class RpcConsumer implements Consumer {
 
     private FlowPostProcessor flowPostProcessor;
 
+    //是否开启数据缓冲
+    private boolean enableBuffer;
+
+    //缓冲区大小
+    private int bufferSize;
+
 
     private RpcConsumer() {
         localIp = IpUtils.getLocalHostIp();
         bootstrap = new Bootstrap();
         eventLoopGroup = new NioEventLoopGroup(4);
     }
+
+    public RpcConsumer setEnableBuffer(boolean enableBuffer) {
+        this.enableBuffer = enableBuffer;
+        return this;
+    }
+
+    public RpcConsumer setBufferSize(int bufferSize) {
+        this.bufferSize = bufferSize;
+        return this;
+    }
+
     public RpcConsumer setEnableDirectServer(boolean enableDirectServer) {
         this.enableDirectServer = enableDirectServer;
         return this;
@@ -161,7 +178,7 @@ public class RpcConsumer implements Consumer {
      */
     public RpcConsumer buildNettyGroup(){
         bootstrap.group(eventLoopGroup).channel(NioSocketChannel.class)
-                .handler(new RpcConsumerInitializer(heartbeatInterval, concurrentThreadPool, flowPostProcessor));
+                .handler(new RpcConsumerInitializer(enableBuffer, bufferSize, heartbeatInterval, concurrentThreadPool, flowPostProcessor));
         return this;
     }
 

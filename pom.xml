@@ -30,6 +30,7 @@
         <module>checkrpc-flow</module>
         <module>checkrpc-connection</module>
         <module>checkrpc-disuse</module>
+        <module>checkrpc-buffer</module>
     </modules>
 
     <properties>

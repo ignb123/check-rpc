@@ -85,6 +85,10 @@ public final class SpringBootConsumerConfig {
 
     private String flowType;
 
+    private boolean enableBuffer;
+
+    private int bufferSize;
+
     public SpringBootConsumerConfig() {
     }
 
@@ -95,7 +99,8 @@ public final class SpringBootConsumerConfig {
                                     final boolean enableResultCache, final int resultCacheExpire,
                                     final boolean enableDirectServer, final String directServerUrl,
                                     final boolean enableDelayConnection,
-                                    final int corePoolSize, final int maximumPoolSize, final String flowType) {
+                                    final int corePoolSize, final int maximumPoolSize, final String flowType,
+                                    boolean enableBuffer, int bufferSize) {
         this.registryAddress = registryAddress;
         this.registryType = registryType;
         this.loadBalanceType = loadBalanceType;
@@ -120,6 +125,8 @@ public final class SpringBootConsumerConfig {
         this.corePoolSize = corePoolSize;
         this.maximumPoolSize = maximumPoolSize;
         this.flowType = flowType;
+        this.enableBuffer = enableBuffer;
+        this.bufferSize = bufferSize;
     }
 
     public String getRegistryAddress() {
@@ -296,5 +303,21 @@ public final class SpringBootConsumerConfig {
 
     public void setFlowType(String flowType) {
         this.flowType = flowType;
+    }
+
+    public boolean isEnableBuffer() {
+        return enableBuffer;
+    }
+
+    public void setEnableBuffer(boolean enableBuffer) {
+        this.enableBuffer = enableBuffer;
+    }
+
+    public int getBufferSize() {
+        return bufferSize;
+    }
+
+    public void setBufferSize(int bufferSize) {
+        this.bufferSize = bufferSize;
     }
 }
