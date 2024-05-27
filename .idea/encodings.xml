@@ -47,6 +47,14 @@
     <file url="file://$PROJECT_DIR$/checkrpc-disuse/checkrpc-disuse-api/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/checkrpc-disuse/checkrpc-disuse-defult/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/checkrpc-disuse/checkrpc-disuse-defult/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/checkrpc-disuse/checkrpc-disuse-fifo/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/checkrpc-disuse/checkrpc-disuse-fifo/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/checkrpc-disuse/checkrpc-disuse-lfu/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/checkrpc-disuse/checkrpc-disuse-lfu/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/checkrpc-disuse/checkrpc-disuse-lru/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/checkrpc-disuse/checkrpc-disuse-lru/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/checkrpc-disuse/checkrpc-disuse-refuse/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/checkrpc-disuse/checkrpc-disuse-refuse/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/checkrpc-disuse/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/checkrpc-disuse/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/checkrpc-flow/checkrpc-flow-api/src/main/java" charset="UTF-8" />

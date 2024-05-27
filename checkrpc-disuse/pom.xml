@@ -14,6 +14,10 @@
     <modules>
         <module>checkrpc-disuse-api</module>
         <module>checkrpc-disuse-defult</module>
+        <module>checkrpc-disuse-fifo</module>
+        <module>checkrpc-disuse-lfu</module>
+        <module>checkrpc-disuse-lru</module>
+        <module>checkrpc-disuse-refuse</module>
     </modules>
 
     <properties>

@@ -17,6 +17,31 @@
             <artifactId>checkrpc-disuse-defult</artifactId>
             <version>${project.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>io.check.rpc</groupId>
+            <artifactId>checkrpc-disuse-fifo</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.check.rpc</groupId>
+            <artifactId>checkrpc-disuse-lfu</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.check.rpc</groupId>
+            <artifactId>checkrpc-disuse-lru</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.check.rpc</groupId>
+            <artifactId>checkrpc-disuse-refuse</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
     </dependencies>
 
 
