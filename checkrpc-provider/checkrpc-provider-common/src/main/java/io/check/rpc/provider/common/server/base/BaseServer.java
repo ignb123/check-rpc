@@ -105,13 +105,26 @@ public class BaseServer implements Server {
     //当限流失败时的处理策略
     private String rateLimiterFailStrategy;
 
+    //是否开启熔断策略
+    private boolean enableFusing;
+
+    //熔断规则标识
+    private String fusingType;
+
+    //在fusingMilliSeconds毫秒内触发熔断操作的上限值
+    private double totalFailure;
+
+    //熔断的毫秒时长
+    private int fusingMilliSeconds;
+
     public BaseServer(String serverAddress, String registryAddress, String registryType,
                       String registryLoadBalanceType, String reflectType,
                       int heartbeatInterval, int scanNotActiveChannelInterval,
                       boolean enableResultCache, int resultCacheExpire, int corePoolSize,
                       int maximumPoolSize, String flowType, int maxConnections, String disuseStrategyType,
                       boolean enableBuffer, int bufferSize, boolean enableRateLimiter, String rateLimiterType,
-                      int permits, int milliSeconds, String rateLimiterFailStrategy){
+                      int permits, int milliSeconds, String rateLimiterFailStrategy, boolean enableFusing,
+                      String fusingType, double totalFailure, int fusingMilliSeconds ){
         if (heartbeatInterval > 0){
             this.heartbeatInterval = heartbeatInterval;
         }
@@ -143,6 +156,10 @@ public class BaseServer implements Server {
         this.permits = permits;
         this.milliSeconds = milliSeconds;
         this.rateLimiterFailStrategy = rateLimiterFailStrategy;
+        this.enableFusing = enableFusing;
+        this.fusingType = fusingType;
+        this.totalFailure = totalFailure;
+        this.fusingMilliSeconds = fusingMilliSeconds;
     }
 
     private void startHeartbeat() {
@@ -207,7 +224,8 @@ public class BaseServer implements Server {
                                     .addLast(RpcConstants.CODEC_HANDLER,new RpcProviderHandler(handlerMap, enableResultCache,
                                             resultCacheExpire, corePoolSize, maximumPoolSize,reflectType,maxConnections,
                                             disuseStrategyType, enableBuffer, bufferSize, enableRateLimiter,
-                                            rateLimiterType, permits, milliSeconds, rateLimiterFailStrategy));
+                                            rateLimiterType, permits, milliSeconds, rateLimiterFailStrategy,enableFusing,
+                                            fusingType, totalFailure, fusingMilliSeconds));
                         }
                     })
                     // 配置服务器端连接队列大小

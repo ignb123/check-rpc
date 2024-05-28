@@ -65,6 +65,14 @@
     <file url="file://$PROJECT_DIR$/checkrpc-flow/checkrpc-flow-print/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/checkrpc-flow/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/checkrpc-flow/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/checkrpc-fusing/checkrpc-fusing-api/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/checkrpc-fusing/checkrpc-fusing-api/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/checkrpc-fusing/checkrpc-fusing-counter/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/checkrpc-fusing/checkrpc-fusing-counter/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/checkrpc-fusing/checkrpc-fusing-percent/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/checkrpc-fusing/checkrpc-fusing-percent/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/checkrpc-fusing/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/checkrpc-fusing/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/checkrpc-loadbalancer/checkrpc-loadbalancer-api/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/checkrpc-loadbalancer/checkrpc-loadbalancer-api/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/checkrpc-loadbalancer/checkrpc-loadbalancer-consistenthash-zk/src/main/java" charset="UTF-8" />

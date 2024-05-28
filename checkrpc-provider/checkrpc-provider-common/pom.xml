@@ -90,5 +90,16 @@
             <version>${project.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>io.check.rpc</groupId>
+            <artifactId>checkrpc-fusing-counter</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.check.rpc</groupId>
+            <artifactId>checkrpc-fusing-percent</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 </project>

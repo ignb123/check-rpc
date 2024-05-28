@@ -12,7 +12,8 @@ public class RpcSingleServerTest {
                 "javassist",30000, 60000,
                 true, 30000,16,16,"print",
                 16, "LRU",true, 1024,true,
-                "count", 2,3000,"fallback");
+                "count", 2,3000,"fallback",
+                true,"counter",1,5000);
         singleServer.startNettyServer();
     }
 }

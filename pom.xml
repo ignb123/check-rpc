@@ -32,6 +32,7 @@
         <module>checkrpc-disuse</module>
         <module>checkrpc-buffer</module>
         <module>checkrpc-ratelimiter</module>
+        <module>checkrpc-fusing</module>
     </modules>
 
     <properties>

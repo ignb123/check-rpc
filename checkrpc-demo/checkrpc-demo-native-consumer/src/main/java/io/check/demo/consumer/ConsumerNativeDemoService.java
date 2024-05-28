@@ -24,10 +24,11 @@ public class ConsumerNativeDemoService {
                 3000, false, false,30000, 60000,
                 1000, 3, false, 10000,
                 true,"127.0.0.1:27880",
-                false, 16, 16,"print",
-                true,2,"jdk",
+                true, 16, 16,"print",
+                false,2,"jdk",
                 "io.check.demo.consumer.hello.FallbackDemoServiceImpl",
-                true, "guava", 100, 1000,"fallback");
+                false, "guava", 1, 5000,"fallback",
+                true, "percent", 10, 10000);
     }
 
     @Test
