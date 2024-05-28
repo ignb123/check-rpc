@@ -99,12 +99,18 @@ public class ProxyConfig<T> implements Serializable {
      */
     private int milliSeconds;
 
+    /**
+     * 当限流失败时的处理策略
+     */
+    private String rateLimiterFailStrategy;
+
+
 
     public ProxyConfig(Class<T> clazz, String serviceVersion, String serviceGroup, long timeout, Consumer consumer,
                        String serializationType, boolean async, boolean oneway, RegistryService registryService,
                        boolean enableResultCache, int resultCacheExpire, String reflectType, String fallbackClassName,
                        Class<?> fallbackClass,boolean enableRateLimiter, String rateLimiterType, int permits,
-                       int milliSeconds) {
+                       int milliSeconds, String rateLimiterFailStrategy) {
         this.clazz = clazz;
         this.serviceVersion = serviceVersion;
         this.serviceGroup = serviceGroup;
@@ -123,6 +129,7 @@ public class ProxyConfig<T> implements Serializable {
         this.rateLimiterType = rateLimiterType;
         this.permits = permits;
         this.milliSeconds = milliSeconds;
+        this.rateLimiterFailStrategy = rateLimiterFailStrategy;
     }
 
     public Class<T> getClazz() {
@@ -268,4 +275,13 @@ public class ProxyConfig<T> implements Serializable {
     public void setMilliSeconds(int milliSeconds) {
         this.milliSeconds = milliSeconds;
     }
+
+    public String getRateLimiterFailStrategy() {
+        return rateLimiterFailStrategy;
+    }
+
+    public void setRateLimiterFailStrategy(String rateLimiterFailStrategy) {
+        this.rateLimiterFailStrategy = rateLimiterFailStrategy;
+    }
+
 }

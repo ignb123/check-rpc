@@ -79,11 +79,16 @@ public class RpcProviderHandler extends SimpleChannelInboundHandler<RpcProtocol<
      */
     private RateLimiterInvoker rateLimiterInvoker;
 
+    /**
+     * 服务提供者达到限流上限时，要执行的规则标识
+     */
+    private String rateLimiterFailStrategy;
+
     public RpcProviderHandler(Map<String,Object> handlerMap, boolean enableResultCache,
                               int resultCacheExpire, int corePoolSize, int maximumPoolSize,
                               String reflectType, int maxConnections, String disuseStrategyType,
                               boolean enableBuffer, int bufferSize, boolean enableRateLimiter,
-                              String rateLimiterType, int permits, int milliSeconds) {
+                              String rateLimiterType, int permits, int milliSeconds, String rateLimiterFailStrategy) {
         this.handlerMap = handlerMap;
         this.reflectInvoker = ExtensionLoader.getExtension(ReflectInvoker.class,reflectType);
         if (resultCacheExpire <= 0){
@@ -97,6 +102,10 @@ public class RpcProviderHandler extends SimpleChannelInboundHandler<RpcProtocol<
         this.initBuffer(bufferSize);
         this.enableRateLimiter = enableRateLimiter;
         this.initRateLimiter(rateLimiterType, permits, milliSeconds);
+        if (StringUtils.isEmpty(rateLimiterFailStrategy)){
+            rateLimiterFailStrategy = RpcConstants.RATE_LIMILTER_FAIL_STRATEGY_DIRECT;
+        }
+        this.rateLimiterFailStrategy = rateLimiterFailStrategy;
     }
 
     /**
@@ -209,7 +218,7 @@ public class RpcProviderHandler extends SimpleChannelInboundHandler<RpcProtocol<
                 RpcProtocol<RpcRequest> protocol = bufferObject.getProtocol();
                 RpcHeader header = protocol.getHeader();
                 // 调用真实方法
-                RpcProtocol<RpcResponse> responseRpcProtocol = handlerRequestMessageWithCacheAndRateLimiter(protocol, header);
+                RpcProtocol<RpcResponse> responseRpcProtocol = handlerRequestMessageWithCacheAndRateLimiter(ctx,protocol, header);
                 // 响应消息
                 this.writeAndFlush(header.getRequestId(), ctx, responseRpcProtocol);
             }
@@ -234,7 +243,7 @@ public class RpcProviderHandler extends SimpleChannelInboundHandler<RpcProtocol<
      * @param protocol
      */
     private void submitRequest(ChannelHandlerContext ctx, RpcProtocol<RpcRequest> protocol) {
-        RpcProtocol<RpcResponse> responseRpcProtocol = handlerMessage(protocol, ctx.channel());
+        RpcProtocol<RpcResponse> responseRpcProtocol = handlerMessage(ctx, protocol, ctx.channel());
         writeAndFlush(protocol.getHeader().getRequestId(), ctx, responseRpcProtocol);
     }
 
@@ -257,7 +266,7 @@ public class RpcProviderHandler extends SimpleChannelInboundHandler<RpcProtocol<
     /**
      * 带有限流模式提交请求信息
      */
-    private RpcProtocol<RpcResponse> handlerRequestMessageWithCacheAndRateLimiter(RpcProtocol<RpcRequest> protocol, RpcHeader header){
+    private RpcProtocol<RpcResponse> handlerRequestMessageWithCacheAndRateLimiter(ChannelHandlerContext ctx,RpcProtocol<RpcRequest> protocol, RpcHeader header){
         RpcProtocol<RpcResponse> responseRpcProtocol = null;
         if (enableRateLimiter){
             if (rateLimiterInvoker.tryAcquire()){
@@ -267,13 +276,49 @@ public class RpcProviderHandler extends SimpleChannelInboundHandler<RpcProtocol<
                     rateLimiterInvoker.release();
                 }
             }else {
-                //TODO 执行各种策略
+                responseRpcProtocol = this.invokeFailRateLimiterMethod(ctx, protocol, header);
             }
         }else {
             responseRpcProtocol = this.handlerRequestMessageWithCache(protocol, header);
         }
         return responseRpcProtocol;
     }
+
+    /**
+     * 执行限流失败时的处理逻辑
+     */
+    private RpcProtocol<RpcResponse> invokeFailRateLimiterMethod(ChannelHandlerContext ctx,RpcProtocol<RpcRequest> protocol, RpcHeader header) {
+        logger.info("execute {} fail rate limiter strategy...", rateLimiterFailStrategy);
+        switch (rateLimiterFailStrategy){
+            case RpcConstants.RATE_LIMILTER_FAIL_STRATEGY_EXCEPTION:
+            case RpcConstants.RATE_LIMILTER_FAIL_STRATEGY_FALLBACK:
+                return this.handlerFallbackMessage(protocol);
+            case RpcConstants.RATE_LIMILTER_FAIL_STRATEGY_DIRECT:
+                return this.handlerRequestMessageWithCache(protocol, header);
+            case RpcConstants.RATE_LIMILTER_FAIL_STRATEGY_BUFFER:
+                this.bufferCacheManager.put(new BufferObject<>(ctx, protocol));
+        }
+        return this.handlerRequestMessageWithCache(protocol, header);
+    }
+
+    /**
+     * 处理降级（容错）消息
+     */
+    private RpcProtocol<RpcResponse> handlerFallbackMessage(RpcProtocol<RpcRequest> protocol) {
+        RpcProtocol<RpcResponse> responseRpcProtocol = new RpcProtocol<>();
+        RpcHeader header = protocol.getHeader();
+        header.setStatus((byte)RpcStatus.FAIL.getCode());
+        header.setMsgType((byte) RpcType.RESPONSE.getType());
+        responseRpcProtocol.setHeader(header);
+
+        RpcResponse response = new RpcResponse();
+        response.setError("provider execute ratelimiter fallback strategy...");
+        responseRpcProtocol.setBody(response);
+
+        return responseRpcProtocol;
+    }
+
+
 
     /**
      * 根据成员变量enableResultCache的值来处理结果数据，如果enableResultCache的值为true，
@@ -317,7 +362,7 @@ public class RpcProviderHandler extends SimpleChannelInboundHandler<RpcProtocol<
     /**
      * 处理消息
      */
-    private RpcProtocol<RpcResponse> handlerMessage(RpcProtocol<RpcRequest> protocol, Channel channel) {
+    private RpcProtocol<RpcResponse> handlerMessage(ChannelHandlerContext ctx, RpcProtocol<RpcRequest> protocol, Channel channel) {
         RpcProtocol<RpcResponse> responseRpcProtocol = null;
         RpcHeader header = protocol.getHeader();
         //从服务消费者发起的心跳数据
@@ -326,7 +371,7 @@ public class RpcProviderHandler extends SimpleChannelInboundHandler<RpcProtocol<
         }else if (header.getMsgType() == (byte) RpcType.HEARTBEAT_TO_PROVIDER.getType()){  //服务消费者响应服务提供者的心跳数据
             this.handlerHeartbeatMessageToProvider(protocol, channel);
         }else if (header.getMsgType() == (byte) RpcType.REQUEST.getType()){ //请求消息
-            responseRpcProtocol = handlerRequestMessageWithCacheAndRateLimiter(protocol, header);
+            responseRpcProtocol = handlerRequestMessageWithCacheAndRateLimiter(ctx, protocol, header);
         }
         return responseRpcProtocol;
 
@@ -335,7 +380,6 @@ public class RpcProviderHandler extends SimpleChannelInboundHandler<RpcProtocol<
     /**
      * 处理服务消费者响应的心跳消息
      */
-
     private void handlerHeartbeatMessageToProvider(RpcProtocol<RpcRequest> protocol, Channel channel) {
         logger.info("receive service consumer heartbeat message, the consumer is: {}, the heartbeat message is: {}",
                 channel.remoteAddress(), protocol.getBody().getParameters()[0]);

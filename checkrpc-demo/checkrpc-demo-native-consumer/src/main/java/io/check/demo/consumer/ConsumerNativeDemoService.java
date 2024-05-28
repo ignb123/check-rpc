@@ -27,7 +27,7 @@ public class ConsumerNativeDemoService {
                 false, 16, 16,"print",
                 true,2,"jdk",
                 "io.check.demo.consumer.hello.FallbackDemoServiceImpl",
-                true, "funnel", 100, 1000);
+                true, "guava", 100, 1000,"fallback");
     }
 
     @Test

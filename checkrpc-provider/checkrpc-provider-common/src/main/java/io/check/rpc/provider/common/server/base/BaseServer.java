@@ -102,13 +102,16 @@ public class BaseServer implements Server {
     //毫秒数
     private int milliSeconds;
 
+    //当限流失败时的处理策略
+    private String rateLimiterFailStrategy;
+
     public BaseServer(String serverAddress, String registryAddress, String registryType,
                       String registryLoadBalanceType, String reflectType,
                       int heartbeatInterval, int scanNotActiveChannelInterval,
                       boolean enableResultCache, int resultCacheExpire, int corePoolSize,
                       int maximumPoolSize, String flowType, int maxConnections, String disuseStrategyType,
                       boolean enableBuffer, int bufferSize, boolean enableRateLimiter, String rateLimiterType,
-                      int permits, int milliSeconds){
+                      int permits, int milliSeconds, String rateLimiterFailStrategy){
         if (heartbeatInterval > 0){
             this.heartbeatInterval = heartbeatInterval;
         }
@@ -139,6 +142,7 @@ public class BaseServer implements Server {
         this.rateLimiterType = rateLimiterType;
         this.permits = permits;
         this.milliSeconds = milliSeconds;
+        this.rateLimiterFailStrategy = rateLimiterFailStrategy;
     }
 
     private void startHeartbeat() {
@@ -203,7 +207,7 @@ public class BaseServer implements Server {
                                     .addLast(RpcConstants.CODEC_HANDLER,new RpcProviderHandler(handlerMap, enableResultCache,
                                             resultCacheExpire, corePoolSize, maximumPoolSize,reflectType,maxConnections,
                                             disuseStrategyType, enableBuffer, bufferSize, enableRateLimiter,
-                                            rateLimiterType, permits, milliSeconds));
+                                            rateLimiterType, permits, milliSeconds, rateLimiterFailStrategy));
                         }
                     })
                     // 配置服务器端连接队列大小

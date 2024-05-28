@@ -13,7 +13,7 @@ public class ProviderNativeDemo {
                 "jdk",30000, 60000,
                 true, 10000,16,16,"print",
                 1,"lru",true,2,true,
-                "funnel", 100, 1000);
+                "guava", 1, 5000,"fallback");
         singleServer.startNettyServer();
     }
 

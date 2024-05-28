@@ -135,6 +135,10 @@ public class RpcClient {
      */
     private int milliSeconds;
 
+    /**
+     * 当限流失败时的处理策略
+     */
+    private String rateLimiterFailStrategy;
 
     public RpcClient(String registryAddress, String registryType, String registryLoadBalanceType, String proxy,
                      String serviceVersion, String serviceGroup, String serializationType, long timeout, boolean async,
@@ -143,7 +147,7 @@ public class RpcClient {
                      boolean enableDirectServer, String directServerUrl, boolean enableDelayConnection,
                      int corePoolSize, int maximumPoolSize, String flowType, boolean enableBuffer, int bufferSize,
                      String reflectType, String fallbackClassName, boolean enableRateLimiter, String rateLimiterType,
-                     int permits, int milliSeconds) {
+                     int permits, int milliSeconds, String rateLimiterFailStrategy) {
         this.retryInterval = retryInterval;
         this.retryTimes = retryTimes;
         this.serviceVersion = serviceVersion;
@@ -171,6 +175,7 @@ public class RpcClient {
         this.rateLimiterType = rateLimiterType;
         this.permits = permits;
         this.milliSeconds = milliSeconds;
+        this.rateLimiterFailStrategy = rateLimiterFailStrategy;
     }
 
     public void setFallbackClass(Class<?> fallbackClass) {
@@ -211,7 +216,7 @@ public class RpcClient {
                         .buildConnection(registryService),
                 serializationType, async, oneway, registryService, enableResultCache, resultCacheExpire,
                 reflectType, fallbackClassName, fallbackClass, enableRateLimiter, rateLimiterType, permits,
-                milliSeconds));
+                milliSeconds,rateLimiterFailStrategy));
         return proxyFactory.getProxy(interfaceClass);
     }
 
@@ -234,7 +239,7 @@ public class RpcClient {
                 ,
                 async, oneway, registryService,enableResultCache, resultCacheExpire,
                 reflectType, fallbackClassName, fallbackClass, enableRateLimiter, rateLimiterType, permits,
-                milliSeconds);    }
+                milliSeconds,rateLimiterFailStrategy);    }
     public void shutdown() {
         RpcConsumer.getInstance().close();
     }
