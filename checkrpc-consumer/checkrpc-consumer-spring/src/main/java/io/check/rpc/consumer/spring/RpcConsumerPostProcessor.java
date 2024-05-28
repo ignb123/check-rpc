@@ -126,6 +126,10 @@ public class RpcConsumerPostProcessor implements ApplicationContextAware, BeanCl
             builder.addPropertyValue("reflectType", annotation.reflectType());
             builder.addPropertyValue("fallbackClass", annotation.fallbackClass());
             builder.addPropertyValue("fallbackClassName", annotation.fallbackClassName());
+            builder.addPropertyValue("enableRateLimiter", annotation.enableRateLimiter());
+            builder.addPropertyValue("rateLimiterType", annotation.rateLimiterType());
+            builder.addPropertyValue("permits", annotation.permits());
+            builder.addPropertyValue("milliSeconds", annotation.milliSeconds());
             // 获取构建完成的BeanDefinition
             BeanDefinition beanDefinition = builder.getBeanDefinition();
             // 将BeanDefinition与字段名映射，存储起来

@@ -90,12 +90,25 @@ public class BaseServer implements Server {
     //缓冲区大小
     private int bufferSize;
 
+    //是否开启限流
+    private boolean enableRateLimiter;
+
+    //限流类型
+    private String rateLimiterType;
+
+    //在milliSeconds毫秒内最多能够通过的请求个数
+    private int permits;
+
+    //毫秒数
+    private int milliSeconds;
+
     public BaseServer(String serverAddress, String registryAddress, String registryType,
                       String registryLoadBalanceType, String reflectType,
                       int heartbeatInterval, int scanNotActiveChannelInterval,
                       boolean enableResultCache, int resultCacheExpire, int corePoolSize,
                       int maximumPoolSize, String flowType, int maxConnections, String disuseStrategyType,
-                      boolean enableBuffer, int bufferSize){
+                      boolean enableBuffer, int bufferSize, boolean enableRateLimiter, String rateLimiterType,
+                      int permits, int milliSeconds){
         if (heartbeatInterval > 0){
             this.heartbeatInterval = heartbeatInterval;
         }
@@ -122,6 +135,10 @@ public class BaseServer implements Server {
         this.disuseStrategyType = disuseStrategyType;
         this.enableBuffer = enableBuffer;
         this.bufferSize = bufferSize;
+        this.enableRateLimiter = enableRateLimiter;
+        this.rateLimiterType = rateLimiterType;
+        this.permits = permits;
+        this.milliSeconds = milliSeconds;
     }
 
     private void startHeartbeat() {
@@ -185,7 +202,8 @@ public class BaseServer implements Server {
                                             new IdleStateHandler(0, 0, heartbeatInterval, TimeUnit.MILLISECONDS))
                                     .addLast(RpcConstants.CODEC_HANDLER,new RpcProviderHandler(handlerMap, enableResultCache,
                                             resultCacheExpire, corePoolSize, maximumPoolSize,reflectType,maxConnections,
-                                            disuseStrategyType, enableBuffer, bufferSize));
+                                            disuseStrategyType, enableBuffer, bufferSize, enableRateLimiter,
+                                            rateLimiterType, permits, milliSeconds));
                         }
                     })
                     // 配置服务器端连接队列大小

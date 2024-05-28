@@ -148,6 +148,25 @@ public class SpringBootConsumerAutoConfiguration {
                 || (RpcConstants.DEFAULT_FALLBACK_CLASS_NAME.equals(referenceBean.getFallbackClassName()) && !StringUtils.isEmpty(springBootConsumerConfig.getFallbackClassName()))){
             referenceBean.setFallbackClassName(springBootConsumerConfig.getFallbackClassName());
         }
+
+        if (!referenceBean.isEnableRateLimiter()){
+            referenceBean.setEnableRateLimiter(springBootConsumerConfig.isEnableRateLimiter());
+        }
+
+        if (StringUtils.isEmpty(referenceBean.getRateLimiterType())
+                || (RpcConstants.DEFAULT_RATELIMITER_INVOKER.equals(referenceBean.getRateLimiterType()) && !StringUtils.isEmpty(springBootConsumerConfig.getRateLimiterType()))){
+            referenceBean.setRateLimiterType(springBootConsumerConfig.getRateLimiterType());
+        }
+
+        if (referenceBean.getPermits() <= 0
+                || (RpcConstants.DEFAULT_RATELIMITER_PERMITS == referenceBean.getPermits() && springBootConsumerConfig.getPermits() > 0)){
+            referenceBean.setPermits(springBootConsumerConfig.getPermits());
+        }
+
+        if (referenceBean.getMilliSeconds() <= 0
+                || (RpcConstants.DEFAULT_RATELIMITER_MILLI_SECONDS == referenceBean.getMilliSeconds() && springBootConsumerConfig.getMilliSeconds() > 0)){
+            referenceBean.setMilliSeconds(springBootConsumerConfig.getMilliSeconds());
+        }
         return referenceBean;
     }
 

@@ -13,6 +13,7 @@
       <set>
         <option value="$PROJECT_DIR$/checkrpc-consumer/checkrpc-demo-spring-xml-consumer/pom.xml" />
         <option value="$PROJECT_DIR$/checkrpc-proxy/checkrpc-proxy-asm/pom.xml" />
+        <option value="$PROJECT_DIR$/checkrpc-ratelimiter/check-ratelimiter-funnel/pom.xml" />
       </set>
     </option>
   </component>

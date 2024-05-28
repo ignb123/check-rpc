@@ -23,11 +23,11 @@ public class RpcSpringServer extends BaseServer implements ApplicationContextAwa
                            String reflectType, int heartbeatInterval, int scanNotActiveChannelInterval,
                            boolean enableResultCache, int resultCacheExpire, int corePoolSize, int maximumPoolSize,
                            String flowType, int maxConnections, String disuseStrategyType, boolean enableBuffer,
-                           int bufferSize) {
+                           int bufferSize, boolean enableRateLimiter, String rateLimiterType, int permits, int milliSeconds) {
         super(serverAddress, registryAddress, registryType, registryLoadBalanceType, reflectType,
                 heartbeatInterval, scanNotActiveChannelInterval, enableResultCache,
                 resultCacheExpire, corePoolSize, maximumPoolSize,flowType, maxConnections,
-                disuseStrategyType, enableBuffer, bufferSize);
+                disuseStrategyType, enableBuffer, bufferSize, enableRateLimiter, rateLimiterType, permits, milliSeconds);
     }
 
     @Override

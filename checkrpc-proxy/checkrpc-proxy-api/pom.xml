@@ -54,7 +54,29 @@
             <version>${project.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>io.check.rpc</groupId>
+            <artifactId>checkrpc-ratelimiter-counter</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
+        <dependency>
+            <groupId>io.check.rpc</groupId>
+            <artifactId>checkrpc-ratelimiter-semaphore</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.check.rpc</groupId>
+            <artifactId>checkrpc-ratelimiter-guava</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.check.rpc</groupId>
+            <artifactId>checkrpc-ratelimiter-funnel</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
 

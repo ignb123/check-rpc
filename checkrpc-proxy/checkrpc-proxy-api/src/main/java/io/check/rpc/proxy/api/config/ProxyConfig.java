@@ -64,16 +64,47 @@ public class ProxyConfig<T> implements Serializable {
      */
     private int resultCacheExpire;
 
+    /**
+     * 反射类型
+     */
     private String reflectType;
 
+    /**
+     * 容错class名称
+     */
     private String fallbackClassName;
 
+    /**
+     * 容错class
+     */
     private Class<?> fallbackClass;
+
+    /**
+     * 是否开启限流
+     */
+    private boolean enableRateLimiter;
+
+    /**
+     * 限流类型
+     */
+    private String rateLimiterType;
+
+    /**
+     * 在milliSeconds毫秒内最多能够通过的请求个数
+     */
+    private int permits;
+
+    /**
+     * 毫秒数
+     */
+    private int milliSeconds;
+
 
     public ProxyConfig(Class<T> clazz, String serviceVersion, String serviceGroup, long timeout, Consumer consumer,
                        String serializationType, boolean async, boolean oneway, RegistryService registryService,
                        boolean enableResultCache, int resultCacheExpire, String reflectType, String fallbackClassName,
-                       Class<?> fallbackClass) {
+                       Class<?> fallbackClass,boolean enableRateLimiter, String rateLimiterType, int permits,
+                       int milliSeconds) {
         this.clazz = clazz;
         this.serviceVersion = serviceVersion;
         this.serviceGroup = serviceGroup;
@@ -88,6 +119,10 @@ public class ProxyConfig<T> implements Serializable {
         this.reflectType = reflectType;
         this.fallbackClassName = fallbackClassName;
         this.fallbackClass = fallbackClass;
+        this.enableRateLimiter = enableRateLimiter;
+        this.rateLimiterType = rateLimiterType;
+        this.permits = permits;
+        this.milliSeconds = milliSeconds;
     }
 
     public Class<T> getClazz() {
@@ -200,5 +235,37 @@ public class ProxyConfig<T> implements Serializable {
 
     public void setFallbackClass(Class<?> fallbackClass) {
         this.fallbackClass = fallbackClass;
+    }
+
+    public boolean isEnableRateLimiter() {
+        return enableRateLimiter;
+    }
+
+    public void setEnableRateLimiter(boolean enableRateLimiter) {
+        this.enableRateLimiter = enableRateLimiter;
+    }
+
+    public String getRateLimiterType() {
+        return rateLimiterType;
+    }
+
+    public void setRateLimiterType(String rateLimiterType) {
+        this.rateLimiterType = rateLimiterType;
+    }
+
+    public int getPermits() {
+        return permits;
+    }
+
+    public void setPermits(int permits) {
+        this.permits = permits;
+    }
+
+    public int getMilliSeconds() {
+        return milliSeconds;
+    }
+
+    public void setMilliSeconds(int milliSeconds) {
+        this.milliSeconds = milliSeconds;
     }
 }

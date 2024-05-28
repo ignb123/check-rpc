@@ -26,7 +26,8 @@ public class ConsumerNativeDemoService {
                 true,"127.0.0.1:27880",
                 false, 16, 16,"print",
                 true,2,"jdk",
-                "io.check.demo.consumer.hello.FallbackDemoServiceImpl");
+                "io.check.demo.consumer.hello.FallbackDemoServiceImpl",
+                true, "funnel", 100, 1000);
     }
 
     @Test

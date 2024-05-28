@@ -40,7 +40,7 @@ import java.util.concurrent.TimeUnit;
 public class RpcConsumer implements Consumer {
 
     private final Logger logger = LoggerFactory.getLogger(RpcConsumer.class);
-    private final Bootstrap bootstrap;
+    private Bootstrap bootstrap;
     private final EventLoopGroup eventLoopGroup;
     private static volatile RpcConsumer instance;
     private static Map<String, RpcConsumerHandler> handlerMap = new ConcurrentHashMap<>();
@@ -176,8 +176,15 @@ public class RpcConsumer implements Consumer {
      * @return
      */
     public RpcConsumer buildNettyGroup(){
-        bootstrap.group(eventLoopGroup).channel(NioSocketChannel.class)
-                .handler(new RpcConsumerInitializer(enableBuffer, bufferSize, heartbeatInterval, concurrentThreadPool, flowPostProcessor));
+        try {
+            bootstrap.group(eventLoopGroup).channel(NioSocketChannel.class)
+                    .handler(new RpcConsumerInitializer(enableBuffer, bufferSize, heartbeatInterval, concurrentThreadPool, flowPostProcessor));
+        }catch (IllegalStateException e){
+            bootstrap = new Bootstrap();
+            bootstrap.group(eventLoopGroup).channel(NioSocketChannel.class)
+                    .handler(new RpcConsumerInitializer(enableBuffer, bufferSize, heartbeatInterval, concurrentThreadPool, flowPostProcessor));
+        }
+
         return this;
     }
 
