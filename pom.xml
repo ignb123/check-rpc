@@ -33,6 +33,7 @@
         <module>checkrpc-buffer</module>
         <module>checkrpc-ratelimiter</module>
         <module>checkrpc-fusing</module>
+        <module>checkrpc-exception</module>
     </modules>
 
     <properties>

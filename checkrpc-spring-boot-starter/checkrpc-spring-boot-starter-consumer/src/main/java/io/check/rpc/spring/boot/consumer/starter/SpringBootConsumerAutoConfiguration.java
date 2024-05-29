@@ -192,6 +192,11 @@ public class SpringBootConsumerAutoConfiguration {
                 || (RpcConstants.DEFAULT_FUSING_MILLI_SECONDS == referenceBean.getFusingMilliSeconds() && springBootConsumerConfig.getFusingMilliSeconds() > 0)){
             referenceBean.setFusingMilliSeconds(springBootConsumerConfig.getFusingMilliSeconds());
         }
+
+        if (StringUtils.isEmpty(referenceBean.getExceptionPostProcessorType())
+                || (RpcConstants.EXCEPTION_POST_PROCESSOR_PRINT.equals(referenceBean.getExceptionPostProcessorType()) && !StringUtils.isEmpty(springBootConsumerConfig.getExceptionPostProcessorType()))){
+            referenceBean.setExceptionPostProcessorType(springBootConsumerConfig.getExceptionPostProcessorType());
+        }
         return referenceBean;
     }
 

@@ -117,6 +117,10 @@ public class BaseServer implements Server {
     //熔断的毫秒时长
     private int fusingMilliSeconds;
 
+    //异常后置处理器标识
+    private String exceptionPostProcessorType;
+
+
     public BaseServer(String serverAddress, String registryAddress, String registryType,
                       String registryLoadBalanceType, String reflectType,
                       int heartbeatInterval, int scanNotActiveChannelInterval,
@@ -124,7 +128,7 @@ public class BaseServer implements Server {
                       int maximumPoolSize, String flowType, int maxConnections, String disuseStrategyType,
                       boolean enableBuffer, int bufferSize, boolean enableRateLimiter, String rateLimiterType,
                       int permits, int milliSeconds, String rateLimiterFailStrategy, boolean enableFusing,
-                      String fusingType, double totalFailure, int fusingMilliSeconds ){
+                      String fusingType, double totalFailure, int fusingMilliSeconds, String exceptionPostProcessorType){
         if (heartbeatInterval > 0){
             this.heartbeatInterval = heartbeatInterval;
         }
@@ -160,6 +164,7 @@ public class BaseServer implements Server {
         this.fusingType = fusingType;
         this.totalFailure = totalFailure;
         this.fusingMilliSeconds = fusingMilliSeconds;
+        this.exceptionPostProcessorType = exceptionPostProcessorType;
     }
 
     private void startHeartbeat() {
@@ -225,7 +230,7 @@ public class BaseServer implements Server {
                                             resultCacheExpire, corePoolSize, maximumPoolSize,reflectType,maxConnections,
                                             disuseStrategyType, enableBuffer, bufferSize, enableRateLimiter,
                                             rateLimiterType, permits, milliSeconds, rateLimiterFailStrategy,enableFusing,
-                                            fusingType, totalFailure, fusingMilliSeconds));
+                                            fusingType, totalFailure, fusingMilliSeconds, exceptionPostProcessorType));
                         }
                     })
                     // 配置服务器端连接队列大小

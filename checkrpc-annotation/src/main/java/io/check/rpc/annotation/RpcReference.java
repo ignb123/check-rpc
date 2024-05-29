@@ -182,4 +182,9 @@ public @interface RpcReference {
      */
     int fusingMilliSeconds() default RpcConstants.DEFAULT_FUSING_MILLI_SECONDS;
 
+    /**
+     * 异常处理类型
+     */
+    String exceptionPostProcessorType() default RpcConstants.EXCEPTION_POST_PROCESSOR_PRINT;
+
 }

@@ -8,6 +8,7 @@ import io.check.rpc.common.utils.StringUtils;
 import io.check.rpc.connection.manager.ConnectionManager;
 import io.check.rpc.constants.RpcConstants;
 import io.check.rpc.common.helper.RpcServiceHelper;
+import io.check.rpc.exception.processor.ExceptionPostProcessor;
 import io.check.rpc.fusing.api.FusingInvoker;
 import io.check.rpc.protocol.RpcProtocol;
 import io.check.rpc.protocol.enumeration.RpcStatus;
@@ -95,12 +96,18 @@ public class RpcProviderHandler extends SimpleChannelInboundHandler<RpcProtocol<
      */
     private FusingInvoker fusingInvoker;
 
+    /**
+     * 异常处理后置处理器
+     */
+    private ExceptionPostProcessor exceptionPostProcessor;
+
     public RpcProviderHandler(Map<String,Object> handlerMap, boolean enableResultCache,
                               int resultCacheExpire, int corePoolSize, int maximumPoolSize,
                               String reflectType, int maxConnections, String disuseStrategyType,
                               boolean enableBuffer, int bufferSize, boolean enableRateLimiter,
                               String rateLimiterType, int permits, int milliSeconds, String rateLimiterFailStrategy,
-                              boolean enableFusing, String fusingType, double totalFailure, int fusingMilliSeconds) {
+                              boolean enableFusing, String fusingType, double totalFailure, int fusingMilliSeconds,
+                              String exceptionPostProcessorType) {
         this.handlerMap = handlerMap;
         this.reflectInvoker = ExtensionLoader.getExtension(ReflectInvoker.class,reflectType);
         if (resultCacheExpire <= 0){
@@ -120,6 +127,11 @@ public class RpcProviderHandler extends SimpleChannelInboundHandler<RpcProtocol<
         this.rateLimiterFailStrategy = rateLimiterFailStrategy;
         this.enableFusing = enableFusing;
         this.initFusing(fusingType, totalFailure, fusingMilliSeconds);
+        if (StringUtils.isEmpty(exceptionPostProcessorType)){
+            exceptionPostProcessorType = RpcConstants.EXCEPTION_POST_PROCESSOR_PRINT;
+        }
+        this.exceptionPostProcessor = ExtensionLoader.getExtension(ExceptionPostProcessor.class, exceptionPostProcessorType);
+
     }
 
     /**
@@ -225,6 +237,7 @@ public class RpcProviderHandler extends SimpleChannelInboundHandler<RpcProtocol<
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         logger.error("server caught exception", cause);
+        exceptionPostProcessor.postExceptionProcessor(cause);
         ProviderChannelCache.remove(ctx.channel());
         connectionManager.remove(ctx.channel());
         ctx.close();
@@ -489,6 +502,7 @@ public class RpcProviderHandler extends SimpleChannelInboundHandler<RpcProtocol<
 
             header.setStatus((byte) RpcStatus.SUCCESS.getCode());
         }catch (Throwable t) {
+            exceptionPostProcessor.postExceptionProcessor(t);
             response.setError(t.toString());
             header.setStatus((byte) RpcStatus.FAIL.getCode());
             logger.error("RPC Server handle request error",t);

@@ -59,6 +59,12 @@
     <file url="file://$PROJECT_DIR$/checkrpc-disuse/checkrpc-disuse-refuse/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/checkrpc-disuse/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/checkrpc-disuse/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/checkrpc-exception/checkrpc-exception-api/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/checkrpc-exception/checkrpc-exception-api/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/checkrpc-exception/checkrpc-exception-print/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/checkrpc-exception/checkrpc-exception-print/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/checkrpc-exception/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/checkrpc-exception/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/checkrpc-flow/checkrpc-flow-api/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/checkrpc-flow/checkrpc-flow-api/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/checkrpc-flow/checkrpc-flow-print/src/main/java" charset="UTF-8" />

@@ -138,6 +138,10 @@ public final class SpringBootConsumerConfig {
      */
     private int fusingMilliSeconds;
 
+    /**
+     * 异常监控类型
+     */
+    private String exceptionPostProcessorType;
 
     public SpringBootConsumerConfig() {
     }
@@ -153,8 +157,8 @@ public final class SpringBootConsumerConfig {
                                     boolean enableBuffer, int bufferSize, String reflectType, String fallbackClassName,
                                     final boolean enableRateLimiter, final String rateLimiterType, final int permits,
                                     final int milliSeconds, final String rateLimiterFailStrategy,final boolean enableFusing,
-                                    final String fusingType, final double totalFailure, final int fusingMilliSeconds
-    ) {
+                                    final String fusingType, final double totalFailure, final int fusingMilliSeconds,
+                                    final String exceptionPostProcessorType) {
         this.registryAddress = registryAddress;
         this.registryType = registryType;
         this.loadBalanceType = loadBalanceType;
@@ -192,6 +196,7 @@ public final class SpringBootConsumerConfig {
         this.fusingType = fusingType;
         this.totalFailure = totalFailure;
         this.fusingMilliSeconds = fusingMilliSeconds;
+        this.exceptionPostProcessorType = exceptionPostProcessorType;
     }
 
     public String getRegistryAddress() {
@@ -472,5 +477,13 @@ public final class SpringBootConsumerConfig {
 
     public void setFusingMilliSeconds(int fusingMilliSeconds) {
         this.fusingMilliSeconds = fusingMilliSeconds;
+    }
+
+    public String getExceptionPostProcessorType() {
+        return exceptionPostProcessorType;
+    }
+
+    public void setExceptionPostProcessorType(String exceptionPostProcessorType) {
+        this.exceptionPostProcessorType = exceptionPostProcessorType;
     }
 }

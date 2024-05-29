@@ -6,6 +6,7 @@ import io.check.rpc.constants.RpcConstants;
 import io.check.rpc.consumer.common.cache.ConsumerChannelCache;
 import io.check.rpc.consumer.common.context.RpcContext;
 
+import io.check.rpc.exception.processor.ExceptionPostProcessor;
 import io.check.rpc.protocol.RpcProtocol;
 import io.check.rpc.protocol.enumeration.RpcStatus;
 import io.check.rpc.protocol.enumeration.RpcType;
@@ -65,9 +66,17 @@ public class RpcConsumerHandler extends SimpleChannelInboundHandler<RpcProtocol<
      */
     private BufferCacheManager<RpcProtocol<RpcResponse>> bufferCacheManager;
 
-    public RpcConsumerHandler(boolean enableBuffer, int bufferSize, ConcurrentThreadPool concurrentThreadPool){
+    /**
+     * 异常后置处理器
+     */
+    private ExceptionPostProcessor exceptionPostProcessor;
+
+
+    public RpcConsumerHandler(boolean enableBuffer, int bufferSize, ConcurrentThreadPool concurrentThreadPool,
+                              ExceptionPostProcessor exceptionPostProcessor){
         this.concurrentThreadPool = concurrentThreadPool;
         this.enableBuffer = enableBuffer;
+        this.exceptionPostProcessor = exceptionPostProcessor;
         if (enableBuffer){
             this.bufferCacheManager = BufferCacheManager.getInstance(bufferSize);
             BufferCacheThreadPool.submit(() -> {
@@ -147,6 +156,12 @@ public class RpcConsumerHandler extends SimpleChannelInboundHandler<RpcProtocol<
             // 记录接收到的数据
             this.handlerMessage(protocol,ctx.channel());
         });
+    }
+
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        exceptionPostProcessor.postExceptionProcessor(cause);
+        super.exceptionCaught(ctx, cause);
     }
 
     /**

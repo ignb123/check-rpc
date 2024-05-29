@@ -124,12 +124,17 @@ public class ProxyConfig<T> implements Serializable {
      */
     private int fusingMilliSeconds;
 
+    /**
+     * 异常监控类型
+     */
+    private String exceptionPostProcessorType;
+
     public ProxyConfig(Class<T> clazz, String serviceVersion, String serviceGroup, long timeout, Consumer consumer,
                        String serializationType, boolean async, boolean oneway, RegistryService registryService,
                        boolean enableResultCache, int resultCacheExpire, String reflectType, String fallbackClassName,
                        Class<?> fallbackClass,boolean enableRateLimiter, String rateLimiterType, int permits,
                        int milliSeconds, String rateLimiterFailStrategy, boolean enableFusing, String fusingType,
-                       double totalFailure, int fusingMilliSeconds) {
+                       double totalFailure, int fusingMilliSeconds, String exceptionPostProcessorType) {
         this.clazz = clazz;
         this.serviceVersion = serviceVersion;
         this.serviceGroup = serviceGroup;
@@ -153,6 +158,7 @@ public class ProxyConfig<T> implements Serializable {
         this.fusingType = fusingType;
         this.totalFailure = totalFailure;
         this.fusingMilliSeconds = fusingMilliSeconds;
+        this.exceptionPostProcessorType = exceptionPostProcessorType;
     }
 
     public Class<T> getClazz() {
@@ -338,4 +344,14 @@ public class ProxyConfig<T> implements Serializable {
     public void setFusingMilliSeconds(int fusingMilliSeconds) {
         this.fusingMilliSeconds = fusingMilliSeconds;
     }
+
+    public String getExceptionPostProcessorType() {
+        return exceptionPostProcessorType;
+    }
+
+    public void setExceptionPostProcessorType(String exceptionPostProcessorType) {
+        this.exceptionPostProcessorType = exceptionPostProcessorType;
+    }
+
+
 }
