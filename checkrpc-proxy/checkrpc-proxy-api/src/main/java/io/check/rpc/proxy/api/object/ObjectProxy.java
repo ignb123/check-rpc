@@ -283,9 +283,10 @@ public class ObjectProxy<T> implements IAsyncObjectProxy, InvocationHandler {
         Object result = null;
         try {
             result = invokeSendRequestMethod(method, args);
+            fusingInvoker.markSuccess();
         }catch (Throwable e){
             exceptionPostProcessor.postExceptionProcessor(e);
-            fusingInvoker.incrementFailureCount();
+            fusingInvoker.markFailed();
             throw new RpcException(e.getMessage());
         }
         return result;

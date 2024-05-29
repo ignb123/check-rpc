@@ -22,9 +22,14 @@ public interface FusingInvoker {
     void incrementCount();
 
     /**
-     * 处理请求失败的次数
+     * 访问成功
      */
-    void incrementFailureCount();
+    void markSuccess();
+
+    /**
+     * 访问失败
+     */
+    void markFailed();
 
     /**
      * 在milliSeconds毫秒内错误数量或者错误百分比达到totalFailure，则触发熔断操作

@@ -23,7 +23,7 @@ public class ConsumerNativeDemoService {
                 "1.0.0", "check", "protostuff",
                 3000, false, false,30000, 60000,
                 1000, 3, false, 10000,
-                true,"127.0.0.1:27880",
+                false,"127.0.0.1:27880",
                 true, 16, 16,"print",
                 false,2,"jdk",
                 "io.check.demo.consumer.hello.FallbackDemoServiceImpl",

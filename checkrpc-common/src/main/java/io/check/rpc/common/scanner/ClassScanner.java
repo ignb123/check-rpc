@@ -49,7 +49,7 @@ public class ClassScanner {
             //自定义过滤规则 如果可以循环(包含子目录) 或则是以.class结尾的文件(编译好的java类文件)
             @Override
             public boolean accept(File file) {
-                return (recursive && file.isDirectory()) || (file.getName().endsWith(".class"));
+                return (recursive && file.isDirectory()) || (file.getName().endsWith(CLASS_FILE_SUFFIX));
             }
         });
 
@@ -64,7 +64,7 @@ public class ClassScanner {
                         classNameList);
             }else{
                 // 如果是java类文件 去掉后面的.class 只留下类名
-                String className = file.getName().substring(0, file.getName().length() - 6);
+                String className = file.getName().substring(0, file.getName().length() - CLASS_FILE_SUFFIX.length());
                 // 添加到集合中去
                 classNameList.add(packageName + '.' + className);
             }
@@ -102,17 +102,20 @@ public class ClassScanner {
             // 如果前半部分和定义的包名相同
             if(name.startsWith(packageDirName)){
                 int idx = name.lastIndexOf("/");
+                String currentPackageDir = "";
                 // 如果以"/"结尾 是一个包
                 if(idx != -1){
                     //获取包名 把"/"替换成"."
-                    packageName = name.substring(0, idx).replace("/", ".");
+                    currentPackageDir = name.substring(0, idx);
+                    packageName = currentPackageDir.replace('/', '.');
+
                 }
                 //如果可以迭代下去 并且是一个包
-                if((idx != -1) || recursive){
+                if((idx != -1 && currentPackageDir.equals(packageDirName)) || recursive){
                     //如果是一个.class文件 而且不是目录
                     if(name.endsWith(CLASS_FILE_SUFFIX) && !entry.isDirectory()){
                         //去掉后面的".class" 获取真正的类名
-                        String className = name.substring(packageName.length() + 1, name.length() - 6);
+                        String className = name.substring(packageName.length() + 1, name.length() -  CLASS_FILE_SUFFIX.length());
                         classNameList.add(packageName + '.' + className);
                     }
                 }
@@ -128,11 +131,9 @@ public class ClassScanner {
      * @return 指定包下所有完整类名的List集合
      * @throws Exception
      */
-    public static List<String> getClassNameList(String packageName) throws Exception{
+    public static List<String> getClassNameList(String packageName, boolean recursive) throws Exception{
         //第一个class类的集合
         List<String> classNameList = new ArrayList<String>();
-        // 是否循环迭代
-        boolean recursive = true;
         //获取包的名字 并进行替换
         String packageDirName = packageName.replace('.', '/');
         // 定义一个枚举的集合 并进行循环来处理这个目录下的things
